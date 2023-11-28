@@ -9,6 +9,7 @@ export class SisoService {
     private month: number = 1;
     private timeList = ['10:00', '12:00'];
     private maxCnt = 1000;
+    private waitTime = 120000;
 
     private async setBrowser() {
         this.browser = await puppeteer.launch({
@@ -94,13 +95,13 @@ export class SisoService {
         await this.page.waitForSelector('#agrApp4');
         await this.page.click('#agrApp4');
         await this.page.click('input[type="submit"]');
-        await this.page.waitForResponse((res) => res.status() === 200);
+        await this.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
 
         await this.page.waitForSelector('#nextMonth');
         await this.page.click('#nextMonth');
-        await this.page.waitForResponse((res) => res.status() === 201);
+        await this.page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
         await this.page.click('#nextMonth');
-        await this.page.waitForResponse(res => res.status() === 201);
+        await this.page.waitForResponse(res => res.status() === 201, { timeout: this.waitTime });
 
         await this.page.type('input#addr', '경기도 시흥시 승지로 34');
         await this.page.type('input#email1', 'koh2woo');
@@ -119,7 +120,7 @@ export class SisoService {
 
         if (dayElem) {
             await dayElem.click();
-            await this.page.waitForResponse((res) => res.status() === 201, { timeout: 120000 });
+            await this.page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
 
             const finds = await this.page.$$(`a[onclick]`);
 
