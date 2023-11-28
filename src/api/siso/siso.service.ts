@@ -119,7 +119,7 @@ export class SisoService {
 
         if (dayElem) {
             await dayElem.click();
-            await this.page.waitForResponse((res) => res.status() === 201);
+            await this.page.waitForResponse((res) => res.status() === 201, { timeout: 120000 });
 
             const finds = await this.page.$$(`a[onclick]`);
 
