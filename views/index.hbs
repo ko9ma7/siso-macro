@@ -9,31 +9,36 @@
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
-    <div class="relative overflow-x-auto">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <th scope="col" class="px-6 py-3">번호</th>
-                <th scope="col" class="px-6 py-3">이름</th>
-                <th scope="col" class="px-6 py-3">예약일자</th>
-                <th scope="col" class="px-6 py-3">신청일자</th>
-                <th scope="col" class="px-6 py-3">상태</th>
-            </thead>
-            <tbody>
-                {{#each data}}
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <td class="px-6 py-4">{{no}}</td>
-                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ name }}
-                    </td>
-                    <td class="px-6 py-4">{{date}}</td>
-                    <td class="px-6 py-4">{{apply}}</td>
-                    <td class="px-6 py-4">{{status}}</td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="w-full relative p-6 overflow-x-auto dark:bg-gray-800 dark:border-gray-700 mb-6">
+        <input type="search" id="id"
+            class="block p-4 mb-4 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="id" required>
+        <input type="search" id="pw"
+            class="block p-4 mb-4 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="pw" required>
+        <button type="submit"
+            class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            onclick="execute()">
+            Run
+        </button>
     </div>
 
+    <div class="w-full relative p-6 overflow-x-auto dark:bg-gray-800 dark:border-gray-700 mb-6 text-white" id="result">
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function execute() {
+            const data = {
+                id: document.getElementById("id").value,
+                pw: document.getElementById("pw").value,
+            }
+            axios.post('/api/siso', data)
+                .then(function (res) {
+                    document.getElementById("result").innerHTML = res.data.data;
+                });
+        }
+    </script>
 </body>
 
 </html>

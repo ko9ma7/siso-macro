@@ -1,12 +1,12 @@
-import { SeleniumModule } from './selenium/selenium.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SisoModule } from './siso/siso.module';
+import { SisoModule } from './api/siso/siso.module';
+import { ApiController } from './api/api.controller';
 
 @Module({
-  imports: [SeleniumModule, SisoModule],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [SisoModule],
+    controllers: [AppController, ApiController],
+    providers: [AppService],
 })
 export class AppModule {}
