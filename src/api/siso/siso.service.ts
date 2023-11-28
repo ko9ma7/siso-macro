@@ -24,7 +24,7 @@ export class SisoService {
     }
 
     async run(body): Promise<any> {
-        const result = ['20230101 10:00'];
+        const result = [];
 
         await this.setBrowser();
         await this.login(body.id, body.pw);
