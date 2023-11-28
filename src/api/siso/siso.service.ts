@@ -38,18 +38,6 @@ export class SisoService {
         while (tryCnt < this.maxCnt) {
             try {
                 console.log(`시도횟수: ${tryCnt}`);
-
-                const now = new Date();
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-
-                if (hours < 18) {
-                    console.log(`${hours}:${minutes}:${seconds}은 예약 가능한 시간이 아닙니다.`);
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                    continue;
-                }
-
                 tryCnt++;
 
                 const start = this.startDate();
@@ -148,6 +136,21 @@ export class SisoService {
         }
 
         return null;
+    }
+
+    async checkIsRunnable() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+
+        if (hours < 18) {
+            const msg = `${hours}:${minutes}:${seconds}은 예약 가능한 시간이 아닙니다.`;
+            console.log(msg);
+
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            throw new Error(msg);
+        }
     }
 
     startDate() {

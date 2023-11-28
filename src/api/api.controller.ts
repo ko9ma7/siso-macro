@@ -1,16 +1,22 @@
+import { Response } from 'express';
 import { SisoService } from './siso/siso.service';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 
 @Controller('api')
 export class ApiController {
-    constructor(private readonly sisoService: SisoService) {}
+    constructor(private readonly sisoService: SisoService) { }
 
     @Post('siso')
-    async execute(@Body() body): Promise<any> {
-        let result = {};
+    async execute(@Body() body, @Res() res: Response): Promise<any> {
+        try {
+            await this.sisoService.checkIsRunnable();
 
-        result = await this.sisoService.run(body);
+            let result = {};
+            result = await this.sisoService.run(body);
 
-        return { data: result };
+            res.status(HttpStatus.CREATED).json(result);
+        } catch (e) {
+            res.status(HttpStatus.BAD_REQUEST).json({ msg: e.message });
+        }
     }
 }

@@ -18,8 +18,13 @@
             placeholder="pw" required>
         <button type="submit"
             class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            onclick="execute()">
+            onclick="run()">
             Run
+        </button>
+        <button type="submit"
+            class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            onclick="quit()">
+            Quit
         </button>
     </div>
 
@@ -28,14 +33,39 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        let isRun = false;
+        let isQuit = false;
+
+        function run() {
+            if (!isRun) {
+                isRun = true;
+                execute();
+            }
+        }
+
+        function quit() {
+            if (isRun) isQuit = true;
+        }
+
         function execute() {
             const data = {
                 id: document.getElementById("id").value,
                 pw: document.getElementById("pw").value,
             }
+
             axios.post('/api/siso', data)
                 .then(function (res) {
                     document.getElementById("result").innerHTML = res.data.data;
+                })
+                .catch(function (e) {
+                    document.getElementById("result").innerHTML = e.response.data.msg;
+
+                    if (isQuit) {
+                        isRun = false;
+                        isQuit = false;
+                    } else {
+                        execute();
+                    }
                 });
         }
     </script>
