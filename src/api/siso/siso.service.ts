@@ -1,5 +1,5 @@
 import puppeteer, { Browser, Page } from 'puppeteer-core';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SisoService {
@@ -149,7 +149,7 @@ export class SisoService {
             console.log(msg);
 
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            throw new Error(msg);
+            throw new HttpException(msg, HttpStatus.BAD_REQUEST);
         }
     }
 

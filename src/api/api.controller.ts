@@ -16,7 +16,7 @@ export class ApiController {
 
             res.status(HttpStatus.CREATED).json(result);
         } catch (e) {
-            res.status(HttpStatus.BAD_REQUEST).json({ msg: e.message });
+            res.status(e.status).json({ code: e.status, msg: e.message });
         }
     }
 }
