@@ -8,7 +8,7 @@ export class SisoService {
     private page: Page;
     private month: number = 1;
     private timeList = ['10:00', '12:00'];
-    private maxCnt = 2;
+    private maxCnt = 1000;
 
     private async setBrowser() {
         this.browser = await puppeteer.launch({
@@ -44,7 +44,7 @@ export class SisoService {
                 const minutes = now.getMinutes();
                 const seconds = now.getSeconds();
 
-                if (hours < 8) {
+                if (hours < 18) {
                     console.log(`${hours}:${minutes}:${seconds}은 예약 가능한 시간이 아닙니다.`);
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                     continue;
