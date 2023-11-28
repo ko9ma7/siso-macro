@@ -29,6 +29,8 @@ export class SisoService {
         await this.setBrowser();
         await this.login(body.id, body.pw);
 
+        await this.inhanceSpeed();
+
         this.page.on('dialog', async (dialog) => {
             await new Promise((resolve) => setTimeout(resolve, 5000));
             await dialog.accept();
@@ -136,6 +138,18 @@ export class SisoService {
         }
 
         return null;
+    }
+
+    async inhanceSpeed() {
+        // 리소스 로딩 제한 설정
+        await this.page.setRequestInterception(true);
+        this.page.on('request', (req) => {
+            if (req.resourceType() === 'stylesheet' || req.resourceType() === 'font' || req.resourceType() === 'image') {
+                req.abort();
+            } else {
+                req.continue();
+            }
+        });
     }
 
     async checkIsRunnable() {
