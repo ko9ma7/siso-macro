@@ -9,7 +9,7 @@ export class SisoService {
     private month: number = 1;
     private timeList = ['10:00', '12:00'];
     private maxCnt = 1000;
-    private waitTime = 120000;
+    private waitTime = 600000;
 
     private async setBrowser() {
         this.browser = await puppeteer.launch({
