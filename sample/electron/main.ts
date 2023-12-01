@@ -1,10 +1,9 @@
 import { app } from 'electron';
-import WindowService from './services/WindowService';
+import windowService from './services/WindowService';
 
 app.whenReady().then(() => {
-    const service = new WindowService();
-    service.createWindow();
-    service.loadWindow();
+    windowService.createWindow();
+    windowService.loadWindow();
 })
 
 app.on('window-all-closed', () => {

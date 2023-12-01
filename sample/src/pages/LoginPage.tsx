@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const LoginPage: React.FC = () => {
     const [inputId, setInputId] = useState('')
@@ -13,22 +13,25 @@ const LoginPage: React.FC = () => {
         setInputPw(e.target.value)
     }
 
-    // login 버튼 클릭 이벤트
-    const onClickLogin = () => {
-        window.ipcRenderer.send('login', { id: inputId, pw: inputPw });
+    const login = () => {
+        window.electron.user.login({ id: inputId, pw: inputPw });
     }
 
-    const closeWindow = () => {
-        window.ipcRenderer.send('close-window');
-    }
-
-    window.ipcRenderer.on('login-res', (event, arg) => {
+    const loginReply = (event, arg) => {
         if (arg.status) {
             location.href = "/home";
-        } else {
-            alert("잘못된 로그인 정보");
         }
-    });
+    };
+
+    const closeWindow = () => {
+        window.electron.window.close();
+    }
+
+    useEffect(() => {
+        window.electron.user.loginReply(loginReply);
+    }, []);
+
+
 
     return (
         <>
@@ -47,7 +50,7 @@ const LoginPage: React.FC = () => {
                 </div>
                 <div>
                     <button type="button" className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                        onClick={onClickLogin}>
+                        onClick={login}>
                         Login
                     </button>
                     <button type="button" className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"

@@ -1,6 +1,6 @@
 import puppeteer, { Browser, Page } from "puppeteer-core";
 
-export default class SisoService {
+class SisoService {
     private host = 'https://share.siheung.go.kr';
     private browser: Browser;
     private pages: Page[];
@@ -72,16 +72,32 @@ export default class SisoService {
     //     return result;
     // }
 
-    async login(id: string, pw: string) {
+    async login(id: string, pw: string): Promise<boolean> {
+        let isLogin: boolean = true;
+
         await this.loginPage().goto(this.host + '/login.do?key=701000');
+
+        this.loginPage().on('dialog', async (dialog) => {
+            if (dialog.message() == '일치하는 로그인 정보(아이디/암호)가 없습니다') {
+                await dialog.accept();
+                isLogin = false;
+            }
+        });
 
         await this.loginPage().click('a#tab2');
 
         await this.loginPage().type('input[name="user_id"]', id);
         await this.loginPage().type('input[name="user_pw"]', pw);
         await this.loginPage().keyboard.press('Enter');
-        await this.loginPage().waitForNavigation();
+        await this.loginPage().waitForNavigation({ waitUntil: 'domcontentloaded' });
+
+        return isLogin;
     }
+
+    async checkLogin(): Promise<boolean> {
+        return false;
+    }
+
 
     // async book(date: string, time: string): Promise<object | string | null> {
     //     await this.page.goto(
@@ -202,3 +218,6 @@ export default class SisoService {
         return date.getDay() == 6;
     }
 }
+
+const sisoService = new SisoService();
+export default sisoService;

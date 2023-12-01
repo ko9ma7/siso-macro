@@ -1,15 +1,14 @@
-import { BrowserWindow, ipcMain } from "electron";
+import { BrowserWindow, dialog, ipcMain } from "electron";
 import { join } from "path";
-import SisoService from "./SisoService";
+import sisoService from "./SisoService";
+import userService from "./UserService";
 
-export default class WindowService {
-    private sisoService: SisoService;
+class WindowService {
     private win: BrowserWindow;
     private readonly host = "http://localhost:5173";
 
     constructor() {
-        this.sisoService = new SisoService();
-        this.sisoService.setBrowser();
+        sisoService.setBrowser();
     }
 
     createWindow() {
@@ -42,16 +41,11 @@ export default class WindowService {
     }
 
     ipcListener() {
-        ipcMain.on('close-window', () => {
-            this.win?.close();
-        });
-        ipcMain.on('minimize-windowdow', () => {
-            this.win?.minimize();
-        });
-        ipcMain.on('login', this.loginListener);
-    }
-
-    private loginListener(event, arg) {
-        event.sender.send('login-res', { status: false });
+        ipcMain.on('window-close', () => this.win?.close());
+        ipcMain.on('windowdow-minimize', () => this.win?.minimize());
+        ipcMain.on('login', userService.login);
     }
 }
+
+const windowService = new WindowService();
+export default windowService;

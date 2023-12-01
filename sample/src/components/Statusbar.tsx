@@ -1,10 +1,10 @@
 const Statusbar: React.FC = () => {
     const minimizeWindow = () => {
-        window.ipcRenderer.send('minimize-window');
+        window.electron.window.minimize();
     }
 
     const closeWindow = () => {
-        window.ipcRenderer.send('close-window');
+        window.electron.window.close();
     }
 
     return (
