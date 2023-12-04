@@ -42,7 +42,7 @@ class WindowService {
 
     ipcListener() {
         ipcMain.on('window-close', () => this.win?.close());
-        ipcMain.on('windowdow-minimize', () => this.win?.minimize());
+        ipcMain.on('window-minimize', () => this.win?.minimize());
         ipcMain.on('login', userService.login);
     }
 }
