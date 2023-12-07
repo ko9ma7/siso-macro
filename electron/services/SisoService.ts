@@ -1,4 +1,4 @@
-import puppeteer, { Browser, Page } from "puppeteer-core";
+import puppeteer, { Browser, ElementHandle, Page } from "puppeteer-core";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -7,13 +7,13 @@ class SisoService {
     private month: number = 1;
     private timeList = ['10:00', '12:00'];
     private maxCnt = 1000;
-    private waitTime = 600000;
+    private waitTime = 600 * 1000;
 
     async setBrowser() {
         this.browser = await puppeteer.launch({
             executablePath:
                 'C:/Program Files/Google/Chrome/Application/chrome.exe',
-            headless: false,
+            headless: !global.isDev,
             defaultViewport: { width: 1920, height: 1080 }, // 브라우저 창 크기 설정 (기본값: 800x600)
             args: ['--start-maximized'], // 최대화된 창으로 시작
         });
@@ -73,14 +73,13 @@ class SisoService {
     // }
 
     async login(id: string, pw: string): Promise<boolean> {
-        let isLogin: boolean = true;
+        let isLogin: boolean = false;
 
         await this.loginPage().goto(this.host + '/login.do?key=701000');
 
         this.loginPage().on('dialog', async (dialog) => {
             if (dialog.message() == '일치하는 로그인 정보(아이디/암호)가 없습니다') {
                 await dialog.accept();
-                isLogin = false;
             }
         });
 
@@ -91,13 +90,26 @@ class SisoService {
         await this.loginPage().keyboard.press('Enter');
         await this.loginPage().waitForNavigation({ waitUntil: 'domcontentloaded' });
 
+        isLogin = await this.checkLogin();
+
         return isLogin;
     }
 
     async checkLogin(): Promise<boolean> {
-        return false;
+        const elems = await this.loginPage().$x("//ul[@class='utility']/li/a[contains(text(), '로그아웃')]");
+
+        return elems && elems.length > 0;
     }
 
+    async logout(): Promise<boolean> {
+        try {
+            const elem = await this.loginPage().waitForXPath("//ul[@class='utility']/li/a[contains(text(), '로그아웃')]", { timeout: this.waitTime });
+
+            await (elem as ElementHandle<Element>).click();
+        } catch (e) { }
+
+        return true;
+    }
 
     // async book(date: string, time: string): Promise<object | string | null> {
     //     await this.page.goto(

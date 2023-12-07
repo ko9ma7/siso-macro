@@ -1,3 +1,6 @@
+import setGlobal from './global';
+setGlobal();
+
 import { app } from 'electron';
 import windowService from './services/WindowService';
 

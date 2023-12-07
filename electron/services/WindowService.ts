@@ -28,7 +28,13 @@ class WindowService {
     }
 
     loadWindow() {
-        this.win?.loadURL(`${this.host}/login`);
+        if (global.isDev) {
+            this.win?.loadURL(`${this.host}/login`);
+            this.win?.webContents.openDevTools({ mode: "detach" });
+        } else {
+            this.win?.loadFile('./');
+        }
+
         this.ipcListener();
 
         // 메인 윈도우가 닫힐 때의 이벤트 핸들러
@@ -36,14 +42,14 @@ class WindowService {
             // 메인 윈도우 참조 해제
             this.win = null;
         });
-
-        this.win?.webContents.openDevTools({ mode: "detach" });
     }
 
     ipcListener() {
         ipcMain.on('window-close', () => this.win?.close());
         ipcMain.on('window-minimize', () => this.win?.minimize());
-        ipcMain.on('login', userService.login);
+        ipcMain.on('window-dialog', (event, args) => dialog.showErrorBox(args.title, args.text));
+        ipcMain.handle('login', userService.login);
+        ipcMain.handle('logout', userService.logout);
     }
 }
 

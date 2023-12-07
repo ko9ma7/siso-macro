@@ -5,12 +5,13 @@
   "main": "./app/main.js",
   "scripts": {
     "compile": "tsc -p tsconfig.electron.json",
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && npm run compile && electron .\"",
-    "build": "tsc && vite build",
+    "dev": "concurrently \"SET APP_ENV=dev && vite\" \"wait-on http://localhost:5173 && npm run compile && SET APP_ENV=dev && electron .\"",
+    "build": "tsc && vite build && npm run compile",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "puppeteer": "^21.5.2",
