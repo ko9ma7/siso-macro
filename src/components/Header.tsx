@@ -14,18 +14,18 @@ const Header: React.FC = () => {
     }
 
     return (
-        <header className="bg-slate-800">
+        <header className="bg-slate-800 w-full h-[100px]">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
                 <div className="cursor-pointer flex">
                     <button className="cursor-pointer mr-2" onClick={() => move('/home')}>
-                        HOME
+                        예약
                     </button>
                     <button className="cursor-pointer mr-2" onClick={() => move('/list')}>
-                        LIST
+                        예약목록
                     </button>
                 </div>
                 <button className="cursor-pointer flex" onClick={logout}>
-                    logout
+                    로그아웃
                 </button>
             </nav>
         </header>

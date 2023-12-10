@@ -45,10 +45,22 @@
 }
 
 #status-bar {
-  user-select: none;
+  background-color: #212121;
+  -webkit-app-region: drag
+}
+
+#status-bar * {
+  -webkit-user-select: none;
   -webkit-app-region: drag;
 }
 
-#status-bar #close-btn {
-  -webkit-app-region: no-drag;
+#status-bar .btn {
+  -webkit-app-region: no-drag
+}
+
+#layout-content {
+  width: 100%;
+  height: 770px;
+  display: relative;
+  overflow: auto;
 }

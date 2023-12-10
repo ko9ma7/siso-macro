@@ -13,10 +13,12 @@ class WindowService {
 
     createWindow() {
         this.win = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: 1200,
+            height: 900,
+            center: true,
             frame: false,
             resizable: false,
+            maximizable: false, // 최대화 비활성화
             webPreferences: {
                 preload: join(__dirname, '../preload.js'),
             }

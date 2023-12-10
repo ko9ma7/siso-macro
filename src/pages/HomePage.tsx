@@ -6,9 +6,9 @@ const HomePage: React.FC = () => {
     }
 
     return (
-        <>
-            <button onClick={onclick}>Start</button>
-        </>
+        <div className="">
+            자동으로 예약 프로그램이 실행중...
+        </div>
     );
 };
 

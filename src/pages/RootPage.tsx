@@ -23,10 +23,12 @@ const RootPage: React.FC = () => {
 
     return (
         <>
-            <div className="w-[800px] h-[600px]">
+            <div className="w-[1200px] h-[900px] font-tenada">
                 <Statusbar />
                 <Header />
-                <Outlet />
+                <div id="layout-content" className="bg-[url('/images/kangin.jpg')] bg-no-repeat bg-contain bg-center opacity-30">
+                    <Outlet />
+                </div>
             </div>
         </>
     );
