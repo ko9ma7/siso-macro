@@ -1,5 +1,5 @@
-import { Page } from "puppeteer-core";
 import { Reservation } from "../common/dto/Reservation";
+import { UserInfo } from "../common/dto/UserInfo";
 
 declare global {
     interface Window {
@@ -11,9 +11,9 @@ declare global {
                 dialog: (args) => void,
             },
             user: {
-                info: () => Promise<void>,
+                info: () => Promise<UserInfo>,
                 login: (args) => Promise<boolean>,
-                logout: (args) => Promise<boolean>,
+                logout: () => Promise<boolean>,
             },
             siso: {
                 list: () => Promise<Reservation[]>,

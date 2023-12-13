@@ -10,7 +10,7 @@ class UserService {
         this.storage = new StorageService('user');
     }
 
-    async login(args) {
+    async login(args): Promise<boolean> {
         const result = { status: false };
         const isLogin = await sisoService.login(args.id, args.pw);
 
@@ -19,10 +19,10 @@ class UserService {
             await this.storage.set(args as UserInfo);
         }
 
-        return result;
+        return result.status;
     }
 
-    async logout() {
+    async logout(): Promise<boolean> {
         const result = { status: false };
         const isLogin = await sisoService.logout();
 
@@ -30,7 +30,7 @@ class UserService {
             result.status = true;
         }
 
-        return result;
+        return result.status;
     }
 }
 

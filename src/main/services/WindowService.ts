@@ -5,7 +5,7 @@ import userService from "./UserService";
 
 class WindowService {
     private window: BrowserWindow;
-    private readonly host = global.isDev ? "http://localhost:5173" : "/render/index.html";
+    private readonly host = global.isDev ? "http://localhost:5173" : "./app/render/index.html";
 
     constructor() {
         sisoService.setBrowser();
@@ -40,7 +40,8 @@ class WindowService {
         const route = '/login';
 
         if (global.isDev) {
-            this.window.loadURL(`${this.host}${route}`);
+            // this.window.loadURL(`${this.host}${route}`);
+            this.window.loadFile(`./app/render/index.html`, { hash: route });
         } else {
             this.window.loadFile(`${this.host}${route}`);
         }

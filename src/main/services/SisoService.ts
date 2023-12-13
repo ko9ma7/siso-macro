@@ -30,8 +30,7 @@ class SisoService {
         this.browser = await puppeteer.launch({
             executablePath:
                 'C:/Program Files/Google/Chrome/Application/chrome.exe',
-            // headless: !global.isDev,
-            headless: true,
+            headless: !global.isDev,
             defaultViewport: { width: 1920, height: 1080 }, // 브라우저 창 크기 설정 (기본값: 800x600)
             args: ['--start-maximized'], // 최대화된 창으로 시작
         });

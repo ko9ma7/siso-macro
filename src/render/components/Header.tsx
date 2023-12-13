@@ -8,7 +8,7 @@ const Header = () => {
     const logout = async () => {
         const res = await window.electron.user.logout();
 
-        if (res.status) {
+        if (res) {
             navigate("/login", { replace: true });
             window.electron.window.size({ width: 800, height: 600 });
         } else {

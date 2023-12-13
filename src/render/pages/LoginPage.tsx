@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-    const refInputId = useRef<HTMLElement>();
-    const refInputPw = useRef<HTMLElement>();
-    const refLoginBtn = useRef<HTMLElement>();
+    const refInputId = useRef<HTMLInputElement>();
+    const refInputPw = useRef<HTMLInputElement>();
+    const refLoginBtn = useRef<HTMLButtonElement>();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const LoginPage = () => {
         const res = await window.electron.user.login({ id: refInputId.current.value, pw: refInputPw.current.value });
         refLoginBtn.current.disabled = false;
 
-        if (res.status) {
+        if (res) {
             navigate('/home', { replace: true });
             window.electron.window.size({ width: 1200, height: 900 });
         } else {

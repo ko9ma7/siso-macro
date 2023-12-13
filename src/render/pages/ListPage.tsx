@@ -5,18 +5,18 @@ import { Reservation } from '../../common/dto/Reservation';
 const ListPage = () => {
     const [list, setList] = useState<Reservation[]>([]);
     const props = useOutletContext();
-    const btnRef = useRef<HTMLElement>();
+    const btnRef = useRef<SVGSVGElement>();
 
     useEffect(() => {
         getList();
     }, []);
 
     const refresh = () => {
-        if (!props.doRefresh) {
-            props.setDoRefresh(true);
+        if (!(props as any).doRefresh) {
+            (props as any).setDoRefresh(true);
 
             window.electron.siso.refreshList().then(() => {
-                props.setDoRefresh(false);
+                (props as any).setDoRefresh(false);
                 getList();
             });
         }
@@ -30,7 +30,7 @@ const ListPage = () => {
     return (
         <div className="p-4 overflow-auto scrollbar-hide">
             <div className="mb-5">
-                <svg ref={btnRef} className={"bi bi-arrow-clockwise rounded-full p-1 cursor-pointer hover:bg-white hover:text-black " + (props.doRefresh ? "animate-spin" : "")}
+                <svg ref={btnRef} className={"bi bi-arrow-clockwise rounded-full p-1 cursor-pointer hover:bg-white hover:text-black " + ((props as any).doRefresh ? "animate-spin" : "")}
                     xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16" onClick={refresh}>
                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />

@@ -2,14 +2,18 @@ productName: "SisoMacro"
 appId: "com.siso.app"
 
 win:
-  target: "nsis"
-  icon: "./public/vite.svg"
+  target:
+    - target: "nsis"
+      arch:
+        - "x64"
+        - "ia32"
 
 nsis:
   oneClick: true
   perMachine: false
 
 files:
+  - "app/**/*"
   - "node_modules/**/*"
-  - "public/**/*"
-  -
+  - "package.json"
+  - "!.vscode${/*}"
