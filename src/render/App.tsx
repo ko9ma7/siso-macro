@@ -1,9 +1,11 @@
 import './App.css'
+import { useState } from 'react';
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import RootPage from './pages/RootPage';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import ListPage from './pages/ListPage';
+import Statusbar from './components/Statusbar';
 
 function App() {
   const router = createBrowserRouter([
@@ -16,11 +18,11 @@ function App() {
       element: <RootPage />,
       children: [
         {
-          path: "/home",
+          path: "home",
           element: <HomePage />,
         },
         {
-          path: "/list",
+          path: "list",
           element: <ListPage />,
         },
       ],
@@ -29,9 +31,12 @@ function App() {
 
   return (
     <>
-      <RouterProvider router={router} />
+      <div className="w-[100vw] h-[100vh] font-tenada">
+        <Statusbar />
+        <RouterProvider router={router} />
+      </div>
     </>
-  )
+  );
 }
 
 export default App

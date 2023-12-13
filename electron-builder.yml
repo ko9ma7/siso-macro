@@ -1,0 +1,15 @@
+productName: "SisoMacro"
+appId: "com.siso.app"
+
+win:
+  target: "nsis"
+  icon: "./public/vite.svg"
+
+nsis:
+  oneClick: true
+  perMachine: false
+
+files:
+  - "node_modules/**/*"
+  - "public/**/*"
+  -

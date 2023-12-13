@@ -11,5 +11,8 @@ export default (() => {
     define: {
       'process.env': process.env,
     },
+    build: {
+      outDir: './app/render'
+    }
   });
 });

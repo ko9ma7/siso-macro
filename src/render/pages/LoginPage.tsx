@@ -1,51 +1,55 @@
 import { useEffect, useRef, useState } from "react";
-import Loading from "../components/Loading";
-import Statusbar from "../components/Statusbar";
+import { useNavigate } from "react-router-dom";
 
-const LoginPage: React.FC = () => {
-    const refInputId = useRef();
-    const refInputPw = useRef();
-    const refLoginBtn = useRef();
-    const [inputId, setInputId] = useState('')
-    const [inputPw, setInputPw] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+const LoginPage = () => {
+    const refInputId = useRef<HTMLElement>();
+    const refInputPw = useRef<HTMLElement>();
+    const refLoginBtn = useRef<HTMLElement>();
+    const navigate = useNavigate();
 
-    // input data 의 변화가 있을 때마다 value 값을 변경해서 useState 해준다
-    const handleInputId = (e) => setInputId(e.target.value)
-    const handleInputPw = (e) => setInputPw(e.target.value)
+    useEffect(() => {
+        setUserInfo();
+    }, []);
+
+    const setUserInfo = async () => {
+        const userInfo = await window.electron.user.info();
+
+        refInputId.current.value = userInfo?.id ?? '';
+        refInputPw.current.value = userInfo?.pw ?? '';
+    }
+
     const handleOnKeyDownPw = (e) => {
         if (e.key === 'Enter') refLoginBtn.current.click();
     }
 
     const login = async (e) => {
-        setIsLoading(true);
-        const res = await window.electron.user.login({ id: inputId, pw: inputPw });
-        setIsLoading(false);
+        refLoginBtn.current.disabled = true;
+        const res = await window.electron.user.login({ id: refInputId.current.value, pw: refInputPw.current.value });
+        refLoginBtn.current.disabled = false;
 
         if (res.status) {
-            location.href = "/home";
+            navigate('/home', { replace: true });
+            window.electron.window.size({ width: 1200, height: 900 });
         } else {
             window.electron.window.dialog({ title: '로그인 실패', text: '아이디 또는 패스워드를 확인해주세요' });
         }
     }
 
     return (
-        <div className="w-[100vw] h-[100vh] relative font-tenada">
-            {isLoading && <Loading />}
-            <Statusbar />
-            <div className="h-[97vh] flex items-center justify-between">
-                <img className="h-full opacity-30" src="/images/son.jpg" />
+        <>
+            <div className="h-[575px] flex items-center justify-between">
+                <img className="h-full opacity-30" src="/images/son_.jpg" />
                 <div className="w-full p-5 justify-self-center">
                     <div className="pb-4">
                         <input type="text" id="id" name="id" ref={refInputId}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-60 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="ID" value={inputId} onChange={handleInputId} required
+                            placeholder="ID" required
                         />
                     </div>
                     <div className="pb-4">
                         <input type="password" id="pw" name="pw" ref={refInputPw}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-60 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Password" value={inputPw} onChange={handleInputPw} onKeyDown={handleOnKeyDownPw} required
+                            placeholder="Password" onKeyDown={handleOnKeyDownPw} required
                         />
                     </div>
                     <div>
@@ -56,7 +60,7 @@ const LoginPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
