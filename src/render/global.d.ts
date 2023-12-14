@@ -20,7 +20,9 @@ declare global {
                 refreshList: () => Promise<void>,
                 createBook: (args) => Promise<Book>,
                 runBook: (args) => Promise<void>,
+                stopBook: (args) => Promise<void>,
                 getBooks: () => Promise<Book[]>,
+                onUpdateBook: (callback: (books: Book[]) => void) => void,
             }
         }
     }

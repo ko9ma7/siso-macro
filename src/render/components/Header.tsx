@@ -1,7 +1,8 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import ROUTER from "../../common/constants/RouterConst";
 
 const Header = () => {
-    const routes = [{ to: '/home', menu: '예약' }, { to: '/list', menu: '목록' }]
+    const routes = [{ to: ROUTER.HOME, menu: '예약' }, { to: ROUTER.LIST, menu: '목록' }]
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -9,7 +10,7 @@ const Header = () => {
         const res = await window.electron.user.logout();
 
         if (res) {
-            navigate("/login", { replace: true });
+            navigate(ROUTER.LOGIN, { replace: true });
             window.electron.window.size({ width: 800, height: 600 });
         } else {
             window.electron.window.dialog({ title: '로그아웃 실패', text: '로그아웃에 실패했습니다. 지속시 관리자에게 문의해주세요.' });

@@ -3,6 +3,7 @@ import puppeteer, { Browser, ElementHandle, Page } from "puppeteer-core";
 import StorageService from "./StorageService";
 import { Reservation } from "../../common/dto/Reservation";
 import { Book } from "../../common/dto/Book";
+import windowService from './WindowService';
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -20,6 +21,7 @@ class SisoService {
     private timeList = ['10:00', '12:00'];
     private maxCnt = 1000;
     private waitTime = 600 * 1000;
+
     public storage: StorageService<SisoStorage>;
 
     constructor() {
@@ -30,7 +32,8 @@ class SisoService {
         this.browser = await puppeteer.launch({
             executablePath:
                 'C:/Program Files/Google/Chrome/Application/chrome.exe',
-            headless: !global.isDev,
+            // headless: !global.isDev,
+            headless: true,
             defaultViewport: { width: 1920, height: 1080 }, // 브라우저 창 크기 설정 (기본값: 800x600)
             args: ['--start-maximized'], // 최대화된 창으로 시작
         });
@@ -45,6 +48,10 @@ class SisoService {
         return this.books;
     }
 
+    getBook = (book: Book): Book | undefined => {
+        return this.books.find((i) => i.id == book.id);
+    };
+
     // 예약 생성
     async createBook(args): Promise<Book> {
         const page = await this.browser.newPage();
@@ -56,51 +63,66 @@ class SisoService {
         return args as Book;
     }
 
+    // 예약 중단
+    stopBook(event, args): void {
+        console.log('Stop Book');
+        const book: Book | undefined = this.getBook(args.book);
+        if (book) book.doRun = false;
+    }
+
     // 예약 실행
-    async runBook(args): Promise<void> {
-        const page = args.page;
+    async runBook(event, args): Promise<void> {
+        console.log('Run Book');
+        const book: Book | undefined = this.getBook(args.book);
         const result = [];
 
-        await this.inhanceSpeed(page);
+        if (book) {
+            console.log('Exist Book');
+            book.doRun = true;
+            await this.inhanceSpeed(book.page);
 
-        page.on('dialog', async (dialog) => {
-            await new Promise((resolve) => setTimeout(resolve, 5000));
-            await dialog.accept();
-        });
+            book.page.on('dialog', async (dialog) => {
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+                await dialog.accept();
+            });
 
-        let tryCnt = 1;
-        while (tryCnt < this.maxCnt) {
-            try {
-                console.log(`시도횟수: ${tryCnt}`);
-                tryCnt++;
+            let tryCnt = 1;
+            while (book?.doRun && tryCnt < this.maxCnt) {
+                try {
+                    book.tryCnt = tryCnt;
+                    console.log(book);
+                    windowService.getWindow().webContents.send('update-books', this.books);
+                    tryCnt++;
 
-                const start = this.startDate();
-                const end = this.endDate();
+                    const start = this.startDate();
+                    const end = this.endDate();
 
-                const timeDiff = Math.abs(end.getTime() - start.getTime());
-                const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    const timeDiff = Math.abs(end.getTime() - start.getTime());
+                    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-                for (let i = 0; i <= dayDiff; i++) {
+                    await new Promise((resolve) => setTimeout(resolve, 10000));
+                    // for (let i = 0; i <= dayDiff; i++) {
 
-                    const current = new Date(start);
-                    current.setDate(start.getDate() + i);
-                    const date = this.dateToStr(current);
+                    //     const current = new Date(start);
+                    //     current.setDate(start.getDate() + i);
+                    //     const date = this.dateToStr(current);
 
-                    for (const time of this.timeList) {
-                        console.log(date + ' ' + time);
-                        if (this.isStaurday(current)) {
-                            const res = await this.book(page, date, time);
-                            if (res) result.push(res);
-                        }
-                    }
+                    //     for (const time of this.timeList) {
+                    //         console.log(date + ' ' + time);
+                    //         if (this.isStaurday(current)) {
+                    //             const res = await this.book(book.page, date, time);
+                    //             if (res) result.push(res);
+                    //         }
+                    //     }
+                    // }
+                } catch (error) {
+                    console.log(error);
                 }
-            } catch (error) {
-                console.log(error);
             }
-        }
 
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        await this.browser.close();
+            // await new Promise((resolve) => setTimeout(resolve, 5000));
+            // await this.browser.close();
+        }
     }
 
     // 로그인

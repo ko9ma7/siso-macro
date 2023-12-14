@@ -8,7 +8,7 @@ const RootPage = () => {
     return (
         <>
             <Header />
-            <div id="layout-content" className="bg-[url('/images/kangin_.jpg')] bg-no-repeat bg-contain bg-center">
+            <div id="layout-content" className="">
                 <Outlet context={{ doRefresh: doRefresh, setDoRefresh: setDoRefresh }} />
             </div>
         </>

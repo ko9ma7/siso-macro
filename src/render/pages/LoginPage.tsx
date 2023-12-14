@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ROUTER from "../../common/constants/RouterConst";
 
 const LoginPage = () => {
     const refInputId = useRef<HTMLInputElement>();
@@ -28,7 +29,7 @@ const LoginPage = () => {
         refLoginBtn.current.disabled = false;
 
         if (res) {
-            navigate('/home', { replace: true });
+            navigate(ROUTER.HOME, { replace: true });
             window.electron.window.size({ width: 1200, height: 900 });
         } else {
             window.electron.window.dialog({ title: '로그인 실패', text: '아이디 또는 패스워드를 확인해주세요' });
@@ -38,7 +39,7 @@ const LoginPage = () => {
     return (
         <>
             <div className="h-[575px] flex items-center justify-between">
-                <img className="h-full opacity-30" src="/images/son_.jpg" />
+                <img className="h-full opacity-30" src="/images/son.jpg" />
                 <div className="w-full p-5 justify-self-center">
                     <div className="pb-4">
                         <input type="text" id="id" name="id" ref={refInputId}

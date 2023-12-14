@@ -1,3 +1,4 @@
+import ROUTER from '../../common/constants/RouterConst';
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { join } from "path";
 import sisoService from "./SisoService";
@@ -13,7 +14,6 @@ class WindowService {
     }
 
     getWindow = (): BrowserWindow => this.window;
-    setWindow = (window: BrowserWindow) => this.window = window;
 
     createWindow(options?: Electron.BrowserWindowConstructorOptions) {
         const oldWindow = this.window;
@@ -37,13 +37,12 @@ class WindowService {
     }
 
     async loadWindow() {
-        const route = '/login';
+        const route = ROUTER.LOGIN;
 
         if (global.isDev) {
-            // this.window.loadURL(`${this.host}${route}`);
-            this.window.loadFile(`./app/render/index.html`, { hash: route });
+            this.window.loadURL(`${this.host}/#${route}`);
         } else {
-            this.window.loadFile(`${this.host}${route}`);
+            this.window.loadFile(`${this.host}`, { hash: route });
         }
 
         // 메인 윈도우가 닫힐 때의 이벤트 핸들러
@@ -73,7 +72,8 @@ class WindowService {
         ipcMain.handle('siso-list', () => sisoService.list());
         ipcMain.handle('siso-list-refresh', () => sisoService.refreshList());
         ipcMain.handle('siso-create-book', (event, args) => sisoService.createBook(args));
-        ipcMain.handle('siso-run-book', (event, args) => sisoService.runBook(args));
+        ipcMain.on('siso-run-book', (event, args) => sisoService.runBook(event, args));
+        ipcMain.on('siso-stop-book', (event, args) => sisoService.stopBook(event, args));
         ipcMain.handle('siso-books', () => sisoService.getBooks());
     }
 }

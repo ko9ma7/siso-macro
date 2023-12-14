@@ -1,6 +1,6 @@
 import './App.css'
-import { useState } from 'react';
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
+import { } from 'react';
+import { RouterProvider, createHashRouter } from "react-router-dom"
 import RootPage from './pages/RootPage';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
@@ -8,7 +8,7 @@ import ListPage from './pages/ListPage';
 import Statusbar from './components/Statusbar';
 
 function App() {
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/login",
       element: <LoginPage />,

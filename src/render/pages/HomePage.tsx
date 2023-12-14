@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
 import { Book } from "../../common/dto/Book";
-import dayjs, { Dayjs } from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider, MobileDateTimePicker } from "@mui/x-date-pickers";
+import BookCard from "../components/home/BookCard";
+import { Space } from "../../common/dto/Space";
+import SPACE from "../../common/constants/SpaceEnum";
 
 const HomePage = () => {
     const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
         getBooks();
+
+        window.electron.siso.onUpdateBook(onUpdateBook);
     }, []);
 
     const creaetBook = async () => {
         const args = {
-            place: "(체육진흥과) 중앙공원 풋살장",
-        };
-        const book = await window.electron.siso.createBook(args);
+            id: crypto.randomUUID(),
+            space: { no: SPACE.JOONGANG.no, name: SPACE.JOONGANG.name } as Space,
+        } as Book;
+
+        await window.electron.siso.createBook(args);
         getBooks();
     }
 
@@ -26,33 +28,8 @@ const HomePage = () => {
         setBooks(list);
     }
 
-    const runBook = async () => {
-
-    }
-
-    const card = (book: Book) => {
-        return (
-            <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 hover:animate-[ease-in-out] bg-gray-700 bg-opacity-90 animate-pulse p-4">
-                <div className="px-6 py-4">
-                    <div className="font-bold text-xl mb-2">{book.place}</div>
-                    <p className="text-gray-300 text-base">
-                        {book.dateTime ?? ''}
-                    </p>
-                </div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DateTimePicker']}>
-                        <MobileDateTimePicker
-                            label="예약일 + 시작시간"
-                            defaultValue={dayjs()}
-                        />
-                    </DemoContainer>
-                </LocalizationProvider>
-                <div className="px-6 pt-4 pb-2">
-                    <button className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">실행</button>
-                    <button className="inline-block bg-red-500 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">중단</button>
-                </div>
-            </div>
-        );
+    const onUpdateBook = (books: Book[]) => {
+        setBooks(books);
     };
 
     return (
@@ -66,7 +43,7 @@ const HomePage = () => {
             </div>
 
             <div className="w-full grid grid-cols-3 gap-4">
-                {books.map((book) => card(book))}
+                {books.map((book) => (<BookCard book={book} />))}
             </div>
         </div >
 
