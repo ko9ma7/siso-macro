@@ -17,6 +17,7 @@
     "@mui/x-date-pickers": "^6.18.4",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
+    "electron-log": "^5.0.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "puppeteer": "^21.5.2",

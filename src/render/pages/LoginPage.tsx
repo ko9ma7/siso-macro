@@ -32,7 +32,7 @@ const LoginPage = () => {
             navigate(ROUTER.HOME, { replace: true });
             window.electron.window.size({ width: 1200, height: 900 });
         } else {
-            window.electron.window.dialog({ title: '로그인 실패', text: '아이디 또는 패스워드를 확인해주세요' });
+            window.electron.window.dialog({ title: 'Error', text: '아이디 또는 패스워드를 확인해주세요' });
         }
     }
 

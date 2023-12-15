@@ -4,12 +4,15 @@ import StorageService from "./StorageService";
 import { Reservation } from "../../common/dto/Reservation";
 import { Book } from "../../common/dto/Book";
 import windowService from './WindowService';
+import userService from './UserService';
+import log from "electron-log";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
     private readonly paths = {
-        login: '/login.do?key=701000',
-        list: '/mypage/receipt_list.do?key=802000',
+        login: '/login.do',
+        list: '/mypage/receipt_list.do',
+        book: '/space/view.do',
     };
     private browser: Browser;
     private loginPage: Page;
@@ -17,8 +20,6 @@ class SisoService {
     private pages: Page[] = [];
     private books: Book[] = [];
 
-    private month: number = 1;
-    private timeList = ['10:00', '12:00'];
     private maxCnt = 1000;
     private waitTime = 600 * 1000;
 
@@ -48,103 +49,34 @@ class SisoService {
         return this.books;
     }
 
-    getBook = (book: Book): Book | undefined => {
-        return this.books.find((i) => i.id == book.id);
-    };
-
-    // 예약 생성
-    async createBook(args): Promise<Book> {
-        const page = await this.browser.newPage();
-        this.pages.push(page);
-
-        args.page = page;
-        this.books.push(args as Book);
-
-        return args as Book;
-    }
-
-    // 예약 중단
-    stopBook(event, args): void {
-        console.log('Stop Book');
-        const book: Book | undefined = this.getBook(args.book);
-        if (book) book.doRun = false;
-    }
-
-    // 예약 실행
-    async runBook(event, args): Promise<void> {
-        console.log('Run Book');
-        const book: Book | undefined = this.getBook(args.book);
-        const result = [];
-
-        if (book) {
-            console.log('Exist Book');
-            book.doRun = true;
-            await this.inhanceSpeed(book.page);
-
-            book.page.on('dialog', async (dialog) => {
-                await new Promise((resolve) => setTimeout(resolve, 5000));
-                await dialog.accept();
-            });
-
-            let tryCnt = 1;
-            while (book?.doRun && tryCnt < this.maxCnt) {
-                try {
-                    book.tryCnt = tryCnt;
-                    console.log(book);
-                    windowService.getWindow().webContents.send('update-books', this.books);
-                    tryCnt++;
-
-                    const start = this.startDate();
-                    const end = this.endDate();
-
-                    const timeDiff = Math.abs(end.getTime() - start.getTime());
-                    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-                    await new Promise((resolve) => setTimeout(resolve, 10000));
-                    // for (let i = 0; i <= dayDiff; i++) {
-
-                    //     const current = new Date(start);
-                    //     current.setDate(start.getDate() + i);
-                    //     const date = this.dateToStr(current);
-
-                    //     for (const time of this.timeList) {
-                    //         console.log(date + ' ' + time);
-                    //         if (this.isStaurday(current)) {
-                    //             const res = await this.book(book.page, date, time);
-                    //             if (res) result.push(res);
-                    //         }
-                    //     }
-                    // }
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-
-            // await new Promise((resolve) => setTimeout(resolve, 5000));
-            // await this.browser.close();
-        }
-    }
+    sendUpdateBooks = (): void => windowService.getWindow().webContents.send('update-books', this.books);
+    getBook = (book: Book): Book | undefined => this.books.find((i) => i.id == book.id);
 
     // 로그인
     async login(id: string, pw: string): Promise<boolean> {
         let isLogin: boolean = false;
 
-        await this.loginPage.goto(this.host + this.paths.login);
+        try {
+            const params = new URLSearchParams({ key: '701000' });
+            await this.loginPage.goto(this.host + this.paths.login + '?' + params.toString());
 
-        this.loginPage.on('dialog', async (dialog) => {
-            if (dialog.message() == '일치하는 로그인 정보(아이디/암호)가 없습니다') {
-                await dialog.accept();
-            }
-        });
+            this.loginPage.on('dialog', async (dialog) => {
+                if (dialog.message() == '일치하는 로그인 정보(아이디/암호)가 없습니다') {
+                    await dialog.accept();
+                }
+            });
 
-        await this.loginPage.click('a#tab2');
+            await this.loginPage.click('a#tab2');
 
-        await this.loginPage.type('input[name="user_id"]', id);
-        await this.loginPage.type('input[name="user_pw"]', pw);
-        await this.loginPage.keyboard.press('Enter');
-        await this.loginPage.waitForNavigation({ waitUntil: 'domcontentloaded' });
+            await this.loginPage.type('input[name="user_id"]', id);
+            await this.loginPage.type('input[name="user_pw"]', pw);
+            await this.loginPage.keyboard.press('Enter');
+            await this.loginPage.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
-        isLogin = await this.checkLogin();
+            isLogin = await this.checkLogin();
+        } catch (e) {
+            log.error(e);
+        }
 
         return isLogin;
     }
@@ -174,15 +106,19 @@ class SisoService {
         let result: Reservation[] = [];
 
         try {
+            const userStorage = await userService.storage.get();
             let storage = await this.storage.get();
-            if (!(storage?.list)) {
+
+
+            if (!(storage[userStorage.id]?.list)) {
                 await this.refreshList();
             }
+
             storage = await this.storage.get();
 
-            result = storage.list;
+            result = storage[userStorage.id].list;
         } catch (e) {
-            console.log(e);
+            log.error(e);
         }
 
         return result;
@@ -192,10 +128,12 @@ class SisoService {
     async refreshList(): Promise<void> {
         const result: Reservation[] = [];
         try {
+            const userStorage = await userService.storage.get();
             const storage = await this.storage.get();
 
             try {
-                await this.listPage.goto(this.host + this.paths.list);
+                const params = new URLSearchParams({ key: '802000' });
+                await this.listPage.goto(this.host + this.paths.list + '?' + params.toString());
             } catch (e) {
                 console.log(e);
             }
@@ -212,62 +150,146 @@ class SisoService {
                 result.push(new Reservation(arr));
             }
 
-            storage.list = result;
+            storage[userStorage.id] = { list: result };
             await this.storage.set(storage);
         } catch (e) {
-            console.log(e);
+            log.error(e);
         }
     }
 
-    async book(page: Page, date: string, time: string): Promise<object | string | null> {
-        await page.goto(
-            this.host +
-            '/space/view.do?searchCategory=3&searchDetailCategory=38&searchCondition=title&pageIndex=2&key=206000&use_date=&space_no=335&searchPositonDong=&searchReserve=&searchStartTime=&searchEndTime=&searchStartDate=&searchEndDate=&searchKeyword=',
-        );
+    // 예약 생성
+    async createBook(args): Promise<Book> {
+        const page = await this.browser.newPage();
+        this.pages.push(page);
 
-        await page.click('a.margin_t_30');
+        args.book.page = page;
+        this.books.push(args.book as Book);
 
-        await page.waitForSelector('#agrApp4');
-        await page.click('#agrApp4');
-        await page.click('input[type="submit"]');
-        await page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
+        return args.book as Book;
+    }
 
-        await page.waitForSelector('#nextMonth');
-        await page.click('#nextMonth');
-        await page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
-        await page.click('#nextMonth');
-        await page.waitForResponse(res => res.status() === 201, { timeout: this.waitTime });
+    // 예약 중단
+    stopBook(event, args): void {
+        const book: Book | undefined = this.getBook(args.book);
+        if (book) {
+            book.doRun = false;
+        }
+    }
 
-        await page.type('input#addr', '경기도 시흥시 승지로 34');
-        await page.type('input#email1', 'koh2woo');
-        await page.type('input#email2', 'naver.com');
-        await page.$eval(
+    // 예약 실행
+    async runBook(event, args): Promise<void> {
+        const book: Book | undefined = this.getBook(args.book);
+
+        if (book) {
+            book.date = args.book.date;
+            book.time = args.book.time;
+            book.doRun = true;
+            await this.inhanceSpeed(book.page);
+
+            book.page.on('dialog', async (dialog) => {
+                await new Promise((resolve) => setTimeout(resolve, 5000));
+                await dialog.accept();
+            });
+
+            let tryCnt = 0;
+            while (tryCnt < this.maxCnt) {
+                try {
+                    if (!book.doRun) break;
+
+                    if (!this.checkIsRunnable(book)) {
+                        await new Promise((resolve) => setTimeout((resolve), 1000));
+                        continue;
+                    }
+
+                    book.tryCnt = ++tryCnt;
+                    this.sendUpdateBooks();
+
+                    const start = this.startDate(book.date);
+                    const end = this.endDate(book.date);
+
+                    const timeDiff = Math.abs(end.getTime() - start.getTime());
+                    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                    for (let i = 0; i <= dayDiff; i++) {
+                        const current = new Date(start);
+                        current.setDate(start.getDate() + i);
+                        const date = this.dateToStr(current);
+
+                        for (const time of [`${book.time}:00`]) {
+                            if (this.isStaurday(current)) {
+                                const res = await this.book(book, date, time);
+                                book.msg += res + '\n';
+                            }
+                        }
+                    }
+
+                    await new Promise((resolve) => setTimeout(resolve, 3000));
+                } catch (error) {
+                    log.error(error);
+                }
+            }
+
+            book.doRun = false;
+            this.sendUpdateBooks();
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+    }
+
+    // 예약 프로세스
+    async book(book: Book, date: string, time: string): Promise<object | string | null> {
+        const params = new URLSearchParams({
+            searchCategory: '3',
+            searchDetailCategory: '38',
+            searchCondition: 'title',
+            pageIndex: '2',
+            key: '206000',
+            use_date: '',
+            space_no: book.space!.no.toString(), // 공간 번호,
+            searchPositonDong: '',
+            searchReserve: '',
+        });
+        await book.page.goto(this.host + this.paths.book + '?' + params.toString());
+
+        await book.page.click('a.margin_t_30');
+
+        await book.page.waitForSelector('#agrApp4');
+        await book.page.click('#agrApp4');
+        await book.page.click('input[type="submit"]');
+        await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
+
+        await book.page.evaluate(() => `fn_getCalendar('${book.space!.no}','${date}')`);
+        await book.page.waitForSelector(`td#day_${date.replace(/-/g, '')}`, { timeout: this.waitTime });
+
+        await book.page.type('input#addr', '경기도 시흥시 승지로 34');
+        await book.page.type('input#email1', 'koh2woo');
+        await book.page.type('input#email2', 'naver.com');
+        await book.page.$eval(
             'input#use_count',
             (input, newValue) => {
                 input.value = newValue;
             },
             '14',
         );
-        await page.type('input#use_purpose', '풋살');
+        await book.page.type('input#use_purpose', '풋살 경기');
 
-        const dayTd = await page.$(`td#day_${date}`);
+        const dayTd = await book.page.$(`td#day_${date.replace(/-/g, '')}`);
         const dayElem = dayTd ? await dayTd.$('a[onclick]') : null;
 
         if (dayElem) {
             await dayElem.click();
-            await page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
+            await book.page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
 
-            const finds = await page.$$(`a[onclick]`);
+            const finds = await book.page.$$(`a[onclick]`);
 
             for (const elem of finds) {
-                const textContent = await page.evaluate(element => element.textContent.trim(), elem);
+                const textContent = await book.page.evaluate(element => element.textContent?.trim(), elem);
                 if (textContent === time) {
                     await elem.click();
 
-                    await page.waitForSelector('#sel_endTime_0');
-                    await page.click('#sel_endTime_0');
+                    await book.page.waitForSelector('#sel_endTime_0');
+                    await book.page.click('#sel_endTime_0');
 
-                    await page.click('a.btn_style1');
+                    await book.page.click('a.btn_style1');
                     return `${date} ${time}`; // 원하는 요소를 찾았으면 루프 종료
                 }
             }
@@ -288,32 +310,30 @@ class SisoService {
         });
     }
 
-    async checkIsRunnable() {
+    checkIsRunnable(book: Book): boolean | string {
         const now = new Date();
         const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
 
         if (hours < 18) {
-            const msg = `${hours}:${minutes}:${seconds}은 예약 가능한 시간이 아닙니다.`;
-            console.log(msg);
-
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            throw new Error(msg);
+            book.msg = `${this.timeToStr(now)}은 예약 가능한 시간이 아닙니다.`;
+        } else {
+            book.msg = ``;
         }
+
+        this.sendUpdateBooks();
+        return hours >= 18;
     }
 
-    startDate() {
-        const start = new Date();
-        start.setMonth(start.getMonth() + this.month);
+    startDate(date: string): Date {
+        const start = new Date(date);
         start.setDate(1);
 
         return start;
     }
 
-    endDate() {
-        const end = new Date();
-        end.setMonth(end.getMonth() + this.month + 1);
+    endDate(date: string): Date {
+        const end = new Date(date);
+        end.setMonth(end.getMonth() + 1);
         end.setDate(0);
 
         return end;
@@ -327,10 +347,25 @@ class SisoService {
         // "yyyymmdd" 포맷으로 반환
         return (
             year +
-            '' +
+            '-' +
             (month < 10 ? '0' + month : month) +
-            '' +
+            '-' +
             (day < 10 ? '0' + day : day)
+        );
+    }
+
+    timeToStr(date: Date) {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        // "hhmmss" 포맷으로 반환
+        return (
+            hours +
+            ':' +
+            (minutes < 10 ? '0' + minutes : minutes) +
+            ':' +
+            (seconds < 10 ? '0' + seconds : seconds)
         );
     }
 

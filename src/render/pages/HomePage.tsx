@@ -14,12 +14,17 @@ const HomePage = () => {
     }, []);
 
     const creaetBook = async () => {
-        const args = {
-            id: crypto.randomUUID(),
-            space: { no: SPACE.JOONGANG.no, name: SPACE.JOONGANG.name } as Space,
-        } as Book;
+        if (books.length >= 10) {
+            window.electron.window.dialog({ title: 'Error', text: '예약은 최대 10개 생성가능' });
+            return;
+        }
 
-        await window.electron.siso.createBook(args);
+        const space = { no: SPACE.JOONGANG.no, name: SPACE.JOONGANG.name } as Space
+        const book = new Book();
+        book.id = crypto.randomUUID();
+        book.space = space;
+
+        await window.electron.siso.createBook({ book: book });
         getBooks();
     }
 
@@ -33,7 +38,7 @@ const HomePage = () => {
     };
 
     return (
-        <div className=" overflow-auto scrollbar-hide p-4">
+        <div className="overflow-auto scrollbar-hide p-4">
             <div className="mb-5">
                 <svg className="bi bi-plus-circle rounded-full p-1 cursor-pointer hover:bg-white hover:text-black" onClick={creaetBook}
                     xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">

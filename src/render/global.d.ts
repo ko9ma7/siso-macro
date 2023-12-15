@@ -8,7 +8,7 @@ declare global {
                 minimize: () => void,
                 close: () => void,
                 size: (args) => void,
-                dialog: (args) => void,
+                dialog: (args: { title?: string, text?: string }) => void,
             },
             user: {
                 info: () => Promise<UserInfo>,
