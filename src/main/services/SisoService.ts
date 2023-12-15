@@ -12,7 +12,7 @@ class SisoService {
     private readonly paths = {
         login: '/login.do',
         list: '/mypage/receipt_list.do',
-        book: '/space/view.do',
+        book: '/space/receipt_agree.do',
     };
     private browser: Browser;
     private loginPage: Page;
@@ -39,6 +39,9 @@ class SisoService {
             args: ['--start-maximized'], // 최대화된 창으로 시작
         });
         this.loginPage = (await this.browser.pages())[0];
+        setInterval(() => {
+            this.loginPage.reload();
+        }, 300 * 1000);
         this.listPage = await this.browser.newPage();
     }
 
@@ -57,6 +60,7 @@ class SisoService {
         let isLogin: boolean = false;
 
         try {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             const params = new URLSearchParams({ key: '701000' });
             await this.loginPage.goto(this.host + this.paths.login + '?' + params.toString());
 
@@ -132,6 +136,7 @@ class SisoService {
             const storage = await this.storage.get();
 
             try {
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 const params = new URLSearchParams({ key: '802000' });
                 await this.listPage.goto(this.host + this.paths.list + '?' + params.toString());
             } catch (e) {
@@ -196,10 +201,10 @@ class SisoService {
                 try {
                     if (!book.doRun) break;
 
-                    if (!this.checkIsRunnable(book)) {
-                        await new Promise((resolve) => setTimeout((resolve), 1000));
-                        continue;
-                    }
+                    // if (!this.checkIsRunnable(book)) {
+                    //     await new Promise((resolve) => setTimeout((resolve), 1000));
+                    //     continue;
+                    // }
 
                     book.tryCnt = ++tryCnt;
                     this.sendUpdateBooks();
@@ -218,7 +223,7 @@ class SisoService {
                         for (const time of [`${book.time}:00`]) {
                             if (this.isStaurday(current)) {
                                 const res = await this.book(book, date, time);
-                                book.msg += res + '\n';
+                                if (res) book.msg += res + '\n';
                             }
                         }
                     }
@@ -237,28 +242,26 @@ class SisoService {
 
     // 예약 프로세스
     async book(book: Book, date: string, time: string): Promise<object | string | null> {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const params = new URLSearchParams({
             searchCategory: '3',
             searchDetailCategory: '38',
             searchCondition: 'title',
             pageIndex: '2',
             key: '206000',
-            use_date: '',
+            use_date: date,
             space_no: book.space!.no.toString(), // 공간 번호,
             searchPositonDong: '',
             searchReserve: '',
         });
         await book.page.goto(this.host + this.paths.book + '?' + params.toString());
 
-        await book.page.click('a.margin_t_30');
+        // await book.page.click('a.margin_t_30');
 
         await book.page.waitForSelector('#agrApp4');
         await book.page.click('#agrApp4');
         await book.page.click('input[type="submit"]');
         await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
-
-        await book.page.evaluate(() => `fn_getCalendar('${book.space!.no}','${date}')`);
-        await book.page.waitForSelector(`td#day_${date.replace(/-/g, '')}`, { timeout: this.waitTime });
 
         await book.page.type('input#addr', '경기도 시흥시 승지로 34');
         await book.page.type('input#email1', 'koh2woo');
@@ -273,8 +276,8 @@ class SisoService {
         await book.page.type('input#use_purpose', '풋살 경기');
 
         const dayTd = await book.page.$(`td#day_${date.replace(/-/g, '')}`);
-        const dayElem = dayTd ? await dayTd.$('a[onclick]') : null;
-
+        const dayElem = dayTd ? await dayTd.$('a[onclick^="fn_getRceptBeginTime"]') : null;
+        console.log(dayElem)
         if (dayElem) {
             await dayElem.click();
             await book.page.waitForResponse((res) => res.status() === 201, { timeout: this.waitTime });
@@ -286,7 +289,7 @@ class SisoService {
                 if (textContent === time) {
                     await elem.click();
 
-                    await book.page.waitForSelector('#sel_endTime_0');
+                    await book.page.waitForSelector('#sel_endTime_0', { timeout: this.waitTime });
                     await book.page.click('#sel_endTime_0');
 
                     await book.page.click('a.btn_style1');
