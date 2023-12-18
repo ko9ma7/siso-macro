@@ -6,8 +6,11 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      'tenada': ['tenada']
+    },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
   darkMode: 'class',
 }
 

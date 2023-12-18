@@ -11,5 +11,11 @@ export default (() => {
     define: {
       'process.env': process.env,
     },
+    root: "./src/render",
+    base: "./",
+    build: {
+      outDir: '../../app/render',
+      emptyOutDir: true,
+    }
   });
 });
