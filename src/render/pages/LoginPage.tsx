@@ -39,7 +39,7 @@ const LoginPage = () => {
     return (
         <>
             <div className="h-[575px] flex items-center justify-between">
-                <img className="h-full opacity-30" src="/images/son.jpg" />
+                <img className="h-full opacity-30" src="./images/son.jpg" />
                 <div className="w-full p-5 justify-self-center">
                     <div className="pb-4">
                         <input type="text" id="id" name="id" ref={refInputId}

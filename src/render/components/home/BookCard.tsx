@@ -3,9 +3,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { } from '@mui/x-date-pickers/DateTimePicker';
-import { DatePicker, LocalizationProvider, MobileTimePicker, TimePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
 import { useRef } from "react";
-import { timer } from "puppeteer-core/lib/esm/third_party/rxjs/rxjs.js";
 
 const BookCard = (props: Props) => {
     const dateRef = useRef<string>(props.book.date);
@@ -13,18 +12,18 @@ const BookCard = (props: Props) => {
     const statusColor = props.book.doRun ? "text-green-700" : "text-red-700";
 
     const runBook = async (book: Book) => {
-        if (['Invalid Date', ''].includes(dateRef.current.trim())) {
-            window.electron.window.dialog({ title: 'Error', text: '예약일을 선택해주세요' });
+        if (!dayjs(dateRef.current.trim()).isValid()) {
+            window.electron.window.dialog({ title: 'Error', text: '예약일을 확인해주세요' });
             return;
         }
 
-        if (['Invalid Time', ''].includes(timeRef.current.trim())) {
-            window.electron.window.dialog({ title: 'Error', text: '예약시간을 선택해주세요' });
+        if (!dayjs(timeRef.current.trim()).isValid()) {
+            window.electron.window.dialog({ title: 'Error', text: '예약시간을 확인해주세요' });
             return;
         }
 
         book.date = dateRef.current;
-        book.time = timeRef.current;
+        book.time = `${timeRef.current}:00`;
         await window.electron.siso.runBook({ book });
     }
 
