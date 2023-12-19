@@ -10,7 +10,7 @@ const HomePage = () => {
     useEffect(() => {
         getBooks();
 
-        window.electron.siso.onUpdateBook(onUpdateBook);
+        window.electron.siso.onUpdateBooks(onUpdateBooks);
     }, []);
 
     const creaetBook = async () => {
@@ -25,7 +25,6 @@ const HomePage = () => {
         book.space = space;
 
         await window.electron.siso.createBook({ book: book });
-        getBooks();
     }
 
     const getBooks = async () => {
@@ -33,7 +32,7 @@ const HomePage = () => {
         setBooks(list);
     }
 
-    const onUpdateBook = (books: Book[]) => {
+    const onUpdateBooks = (books: Book[]) => {
         setBooks(books);
     };
 

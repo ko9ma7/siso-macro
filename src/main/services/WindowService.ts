@@ -72,6 +72,7 @@ class WindowService {
         ipcMain.handle('siso-list', () => sisoService.list());
         ipcMain.handle('siso-list-refresh', () => sisoService.refreshList());
         ipcMain.handle('siso-create-book', (event, args) => sisoService.createBook(args));
+        ipcMain.handle('siso-delete-book', (event, args) => sisoService.deleteBook(args));
         ipcMain.on('siso-run-book', (event, args) => sisoService.runBook(event, args));
         ipcMain.on('siso-stop-book', (event, args) => sisoService.stopBook(event, args));
         ipcMain.handle('siso-books', () => sisoService.getBooks());

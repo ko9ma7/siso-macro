@@ -17,7 +17,6 @@ class SisoService {
     private browser: Browser;
     private loginPage: Page;
     private listPage: Page;
-    private pages: Page[] = [];
     private books: Book[] = [];
 
     private maxCnt = 1000;
@@ -44,14 +43,13 @@ class SisoService {
         this.listPage = await this.browser.newPage();
     }
 
-    getPages = (): Page[] => this.pages;
-
     // 예약 목록
     async getBooks(): Promise<Book[]> {
         return this.books;
     }
 
     sendUpdateBooks = (): void => windowService.getWindow().webContents.send('update-books', this.books);
+    sendUpdateBook = (book: Book): void => windowService.getWindow().webContents.send('update-book', book);
     getBook = (book: Book): Book | undefined => this.books.find((i) => i.id == book.id);
 
     // 로그인
@@ -162,14 +160,19 @@ class SisoService {
     }
 
     // 예약 생성
-    async createBook(args): Promise<Book> {
+    async createBook(args): Promise<void> {
         const page = await this.browser.newPage();
-        this.pages.push(page);
-
         args.book.page = page;
         this.books.push(args.book as Book);
+        this.sendUpdateBooks();
+    }
 
-        return args.book as Book;
+    // 예약 제거
+    async deleteBook(args): Promise<void> {
+        const book = this.getBook(args.book);
+        book?.page.close();
+        this.books.push(args.book as Book);
+        this.sendUpdateBooks();
     }
 
     // 예약 중단
@@ -206,7 +209,7 @@ class SisoService {
                     }
 
                     book.tryCnt = ++tryCnt;
-                    this.sendUpdateBooks();
+                    this.sendUpdateBook(book);
                     const res = await this.book(book);
 
                     if (res) break;
@@ -218,7 +221,7 @@ class SisoService {
             }
 
             book.doRun = false;
-            this.sendUpdateBooks();
+            this.sendUpdateBook(book);
             await new Promise((resolve) => setTimeout(resolve, 3000));
         }
     }
@@ -298,7 +301,7 @@ class SisoService {
             book.msg = ``;
         }
 
-        this.sendUpdateBooks();
+        this.sendUpdateBook(book);
         return hours >= 18;
     }
 

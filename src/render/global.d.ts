@@ -18,11 +18,13 @@ declare global {
             siso: {
                 list: () => Promise<Reservation[]>,
                 refreshList: () => Promise<void>,
-                createBook: (args) => Promise<Book>,
+                createBook: (args) => Promise<void>,
+                deleteBook: (args) => PRomise<void>,
                 runBook: (args) => Promise<void>,
                 stopBook: (args) => Promise<void>,
                 getBooks: () => Promise<Book[]>,
-                onUpdateBook: (callback: (books: Book[]) => void) => void,
+                onUpdateBooks: (callback: (books: Book[]) => void) => void,
+                onUpdateBook: (callback: (book: Book) => void) => void,
             }
         }
     }
