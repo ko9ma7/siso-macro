@@ -123,7 +123,7 @@ const BookCard = (props: Props) => {
             </div>
 
             <Modal isOpen={isModalOpen} style={modalStyle}>
-                <div dangerouslySetInnerHTML={{ __html: props.book.msg }}></div>
+                <div dangerouslySetInnerHTML={{ __html: props.book.msg }} />
                 <button className="absolute top-[5px] right-[5px]" onClick={() => setIsModalOpen(false)}>Close</button>
             </Modal>
         </div>

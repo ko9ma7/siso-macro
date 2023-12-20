@@ -7,6 +7,7 @@ import { Book } from "../../common/dto/Book";
 import windowService from './WindowService';
 import userService from './UserService';
 import log from "electron-log";
+import dayjs from 'dayjs';
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -209,8 +210,14 @@ class SisoService {
 
                     book.tryCnt = ++tryCnt;
                     book.msg += `<br><br> [ ${tryCnt} ]회 실행`;
-
                     this.sendUpdateBooks();
+
+                    if (!this.checkRunnable(book)) {
+                        book.msg += `<br>${book.date} ${book.time}:00:00 은 예약가능한 시간이 아닙니다.`;
+                        await new Promise((resolve) => setTimeout(resolve, 5000));
+                        continue;
+                    }
+
                     const res = await this.book(book);
                     book.msg += `<br>결과: ${res}`;
 
@@ -308,6 +315,17 @@ class SisoService {
                 req.continue();
             }
         });
+    }
+
+    checkRunnable(book: Book) {
+        const now = dayjs();
+        const bookDay = dayjs(book.date);
+
+        if (now.date() < 28) {
+            return now.add(2, 'month').startOf('month').isAfter(bookDay);
+        } else {
+            return now.add(3, 'month').startOf('month').isAfter(bookDay);
+        }
     }
 
     startDate(date: string): Date {
