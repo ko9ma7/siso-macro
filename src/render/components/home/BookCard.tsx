@@ -5,25 +5,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
 import { useEffect, useRef, useState } from "react";
+import Modal from 'react-modal';
 
 const BookCard = (props: Props) => {
-    const [book, setBook] = useState<Book>(props.book);
-    const dateRef = useRef<string>(book.date);
-    const timeRef = useRef<string>(book.time);
-    const statusColor = book.doRun ? "text-green-700" : "text-red-700";
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const dateRef = useRef<string>(props.book.date);
+    const timeRef = useRef<string>(props.book.time);
+    const statusColor = props.book.doRun ? "text-green-700" : "text-red-700";
 
-    useEffect(() => {
-        window.electron.siso.onUpdateBook(onUpdateBook);
-    }, []);
-
-    const onUpdateBook = (update: Book) => {
-        if (book.id == update.id) {
-            setBook(update);
-        }
-    };
+    useEffect(() => { }, []);
 
     const deleteBook = async () => {
-        await window.electron.siso.deleteBook({ book: book });
+        await window.electron.siso.deleteBook({ book: props.book });
     }
 
     const runBook = async () => {
@@ -37,13 +30,13 @@ const BookCard = (props: Props) => {
             return;
         }
 
-        book.date = dateRef.current;
-        book.time = `${timeRef.current}:00`;
-        await window.electron.siso.runBook({ book: book });
+        props.book.date = dateRef.current;
+        props.book.time = `${timeRef.current}:00`;
+        await window.electron.siso.runBook({ book: props.book });
     }
 
     const stopBook = async () => {
-        await window.electron.siso.stopBook({ book: book });
+        await window.electron.siso.stopBook({ book: props.book });
     }
 
     const onDateChange = (newValue: Dayjs) => {
@@ -54,16 +47,43 @@ const BookCard = (props: Props) => {
         timeRef.current = newValue.format('HH');
     }
 
+    const modalStyle = {
+        overlay: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(70, 70, 70, 0.75)'
+        },
+        content: {
+            position: 'absolute',
+            top: '40px',
+            left: '40px',
+            right: '40px',
+            bottom: '40px',
+            border: '1px solid #494949',
+            background: '#14011C',
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            borderRadius: '8px',
+            outline: 'none',
+            padding: '20px'
+        }
+    };
+
     return (
         <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 bg-gray-100 bg-opacity-90 p-4">
             <div className="px-6 py-4">
-                <div className="font-bold text-gray-700 text-xl mb-2">{book.space.name}</div>
-                <p className="text-gray-700 text-base">
-                    {book.date ?? ''}
+                <div className="font-bold text-gray-700 text-xl mb-2">{props.book.space.name}</div>
+                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{props.book.doRun ? '실행' : '중단'}</span></p>
+                <p className={"text-gray-700 text-base"}>시도횟수: {props.book.tryCnt}</p>
+                <p className={"text-gray-700 text-base"}>
+                    <button className="inline-block bg-blue-600 hover:bg-blue-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
+                        onClick={() => setIsModalOpen(true)}>
+                        로그 보기
+                    </button>
                 </p>
-                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{book.doRun ? '실행' : '중단'}</span></p>
-                <p className={"text-gray-700 text-base"}>시도횟수: {book.tryCnt}</p>
-                <p className={"text-gray-700 text-base"}>로그: {book.msg}</p>
             </div>
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -89,18 +109,23 @@ const BookCard = (props: Props) => {
 
             <div className="px-6 pt-4 pb-2">
                 <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
-                    onClick={() => runBook(book)}>
+                    onClick={() => runBook()}>
                     실행
                 </button>
                 <button className="inline-block bg-red-500 hover:bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
-                    onClick={() => stopBook(book)}>
+                    onClick={() => stopBook()}>
                     중단
                 </button>
                 <button className="inline-block bg-gray-500 hover:bg-gray-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
-                    onClick={() => deleteBook(book)}>
+                    onClick={() => deleteBook()}>
                     제거
                 </button>
             </div>
+
+            <Modal isOpen={isModalOpen} style={modalStyle}>
+                <div dangerouslySetInnerHTML={{ __html: props.book.msg }}></div>
+                <button className="absolute top-[5px] right-[5px]" onClick={() => setIsModalOpen(false)}>Close</button>
+            </Modal>
         </div>
     );
 };
