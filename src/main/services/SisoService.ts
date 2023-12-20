@@ -134,7 +134,8 @@ class SisoService {
             try {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 const params = new URLSearchParams({ key: '802000' });
-                await this.listPage.goto(this.host + this.paths.list + '?' + params.toString());
+                const url = this.host + this.paths.list + '?' + params.toString();
+                await this.listPage.goto(url);
             } catch (e) {
                 console.log(e);
             }
@@ -211,10 +212,7 @@ class SisoService {
 
                     this.sendUpdateBooks();
                     const res = await this.book(book);
-
-                    if (res) {
-                        book.msg += `<br>결과: ${res}`;
-                    }
+                    book.msg += `<br>결과: ${res}`;
 
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                 } catch (error) {
@@ -222,6 +220,7 @@ class SisoService {
                     book.msg += `<br>에러: ${error}`;
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                 }
+                this.sendUpdateBooks();
             }
 
             book.doRun = false;
@@ -247,15 +246,22 @@ class SisoService {
         });
         const url = this.host + this.paths.book + '?' + params.toString();
         await book.page.goto(url);
+        book.msg += `<br>진행중: 사이트 접속`;
 
-        await book.page.waitForSelector('#agrApp4');
-        await book.page.click('#agrApp4');
-        await book.page.click('input[type="submit"]');
+        const agrApp4 = await book.page.waitForSelector('#agrApp4', { timeout: this.waitTime });
+        await agrApp4?.click();
+        const submitBtn = await book.page.waitForSelector('input[type="submit"]', { timeout: this.waitTime });
+        await submitBtn?.click();
+        book.msg += `<br>진행중: 준수사항 동의`;
         await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
 
-        await book.page.type('input#addr', '경기도 시흥시 승지로 34');
-        await book.page.type('input#email1', 'sulbing');
-        await book.page.type('input#email2', 'kakao.com');
+        const inputAddr = await book.page.waitForSelector('input#addr', { timeout: this.waitTime });
+        await inputAddr?.type('경기도 시흥시 승지로 34');
+        const inputEmail1 = await book.page.waitForSelector('input#email1', { timeout: this.waitTime });
+        await inputEmail1?.type('sulbing');
+        const inputEmail2 = await book.page.waitForSelector('input#email2', { timeout: this.waitTime });
+        await inputEmail2?.type('kakao.com');
+
         await book.page.$eval(
             'input#use_count',
             (input, newValue) => {
@@ -263,20 +269,28 @@ class SisoService {
             },
             '14',
         );
-        await book.page.type('input#use_purpose', '풋살 경기');
+        const inputPurpose = await book.page.waitForSelector('input#use_purpose', { timeout: this.waitTime });
+        await inputPurpose?.type('풋살 경기');
+        book.msg += `<br>진행중: 예약 등록사항 입력`;
 
-        const finds = await book.page.$$(`a[onclick]`);
-        for (const elem of finds) {
-            const textContent = await book.page.evaluate(element => element.textContent?.trim(), elem);
-            if (textContent?.trim() === book.time.trim()) {
+        const elems = await book.page.$$(`.sel_startTime_li a`);
+        for (const elem of elems) {
+            const textContent = await book.page.evaluate((element) => {
+                return element.textContent?.trim();
+            }, elem);
+
+            if (textContent?.trim() === `${book.time}:00`) {
                 await elem.click();
 
-                await book.page.waitForSelector('#sel_endTime_0', { timeout: this.waitTime });
-                await book.page.click('#sel_endTime_0');
+                const endTime = await book.page.waitForSelector('#sel_endTime_0', { timeout: this.waitTime });
+                await endTime?.click();
 
-                await book.page.click('a.btn_style1');
+                const btn = await book.page.waitForSelector('a.btn_style1', { timeout: this.waitTime });
+                await btn?.click();
+
                 await book.page.waitForFunction(() => !!window.alert, { timeout: this.waitTime });
 
+                book.msg += `<br>진행중: 예약 완료`;
                 return `${book.date} ${book.time}`; // 원하는 요소를 찾았으면 루프 종료
             }
         }

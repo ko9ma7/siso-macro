@@ -7,7 +7,7 @@ export class Book {
     public page: Page;
     public space?: Space;
     public date: string = dayjs().format('YYYY-MM-DD');
-    public time: string = dayjs().format('hh');
+    public time: string = dayjs().format('HH');
     public tryCnt: number = 0;
     public doRun: boolean = false;
     public msg: string = '';

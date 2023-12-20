@@ -31,7 +31,7 @@ const BookCard = (props: Props) => {
         }
 
         props.book.date = dateRef.current;
-        props.book.time = `${timeRef.current}:00`;
+        props.book.time = timeRef.current;
         await window.electron.siso.runBook({ book: props.book });
     }
 
