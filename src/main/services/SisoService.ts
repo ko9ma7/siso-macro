@@ -246,7 +246,7 @@ class SisoService {
         });
         const url = this.host + this.paths.book + '?' + params.toString();
         await book.page.goto(url);
-        book.msg += `<br>진행중: 사이트 접속`;
+        book.msg += `<br>진행중: 사이트 접속 (${url})`;
 
         const agrApp4 = await book.page.waitForSelector('#agrApp4', { timeout: this.waitTime });
         await agrApp4?.click();
