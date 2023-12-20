@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import { SisoStorage } from '../../common/dto/SisoStorage';
 import puppeteer, { Browser, ElementHandle, Page } from "puppeteer-core";
 import StorageService from "./StorageService";
@@ -19,7 +20,6 @@ class SisoService {
     private listPage: Page;
     private books: Book[] = [];
 
-    private maxCnt = 1000;
     private waitTime = 600 * 1000;
 
     public storage: StorageService<SisoStorage>;
@@ -49,7 +49,6 @@ class SisoService {
     }
 
     sendUpdateBooks = (): void => windowService.getWindow().webContents.send('update-books', this.books);
-    sendUpdateBook = (book: Book): void => windowService.getWindow().webContents.send('update-book', book);
     getBook = (book: Book): Book | undefined => this.books.find((i) => i.id == book.id);
 
     // 로그인
@@ -170,9 +169,12 @@ class SisoService {
     // 예약 제거
     async deleteBook(args): Promise<void> {
         const book = this.getBook(args.book);
-        book?.page.close();
-        this.books.push(args.book as Book);
-        this.sendUpdateBooks();
+
+        if (book) {
+            book?.page.close();
+            this.books = this.books.filter((item) => item.id !== book.id);
+            this.sendUpdateBooks();
+        }
     }
 
     // 예약 중단
@@ -190,6 +192,7 @@ class SisoService {
         if (book) {
             book.date = args.book.date;
             book.time = args.book.time;
+            book.msg = '';
             book.doRun = true;
             await this.inhanceSpeed(book.page);
 
@@ -199,30 +202,32 @@ class SisoService {
             });
 
             let tryCnt = 0;
-            while (tryCnt < this.maxCnt) {
+            while (true) {
                 try {
                     if (!book.doRun) break;
 
-                    if (!this.checkIsRunnable(book)) {
-                        await new Promise((resolve) => setTimeout((resolve), 1000));
-                        continue;
-                    }
-
                     book.tryCnt = ++tryCnt;
-                    this.sendUpdateBook(book);
+                    book.msg += `<br><br> [ ${tryCnt} ]회 실행`;
+
+                    this.sendUpdateBooks();
                     const res = await this.book(book);
 
-                    if (res) break;
+                    if (res) {
+                        book.msg += `<br>결과: ${res}`;
+                    }
 
-                    await new Promise((resolve) => setTimeout(resolve, 3000));
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
                 } catch (error) {
                     log.error(error);
+                    book.msg += `<br>에러: ${error}`;
+                    await new Promise((resolve) => setTimeout(resolve, 1000));
                 }
             }
 
             book.doRun = false;
-            this.sendUpdateBook(book);
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            book.msg += `<br>중단`;
+            this.sendUpdateBooks();
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
 
@@ -249,8 +254,8 @@ class SisoService {
         await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
 
         await book.page.type('input#addr', '경기도 시흥시 승지로 34');
-        await book.page.type('input#email1', 'koh2woo');
-        await book.page.type('input#email2', 'naver.com');
+        await book.page.type('input#email1', 'sulbing');
+        await book.page.type('input#email2', 'kakao.com');
         await book.page.$eval(
             'input#use_count',
             (input, newValue) => {
@@ -289,20 +294,6 @@ class SisoService {
                 req.continue();
             }
         });
-    }
-
-    checkIsRunnable(book: Book): boolean | string {
-        const now = new Date();
-        const hours = now.getHours();
-
-        if (hours < 18) {
-            book.msg = `${this.timeToStr(now)}은 예약 가능한 시간이 아닙니다.`;
-        } else {
-            book.msg = ``;
-        }
-
-        this.sendUpdateBook(book);
-        return hours >= 18;
     }
 
     startDate(date: string): Date {
