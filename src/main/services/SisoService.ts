@@ -322,9 +322,11 @@ class SisoService {
         const bookDay = dayjs(book.date);
 
         if (now.date() < 28) {
-            return now.add(2, 'month').startOf('month').isAfter(bookDay);
+            const isBookDay = now.add(2, 'month').startOf('month').isAfter(bookDay);
+            return isBookDay ? (now.hour() >= 18) : false;
         } else {
-            return now.add(3, 'month').startOf('month').isAfter(bookDay);
+            const isBookDay = now.add(3, 'month').startOf('month').isAfter(bookDay);
+            return isBookDay ? (now.hour() >= 18) : false;
         }
     }
 
