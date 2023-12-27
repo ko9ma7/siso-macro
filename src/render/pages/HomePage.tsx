@@ -14,8 +14,8 @@ const HomePage = () => {
     }, []);
 
     const creaetBook = async () => {
-        if (books.length >= 10) {
-            window.electron.window.dialog({ title: 'Error', text: '예약은 최대 10개 생성가능' });
+        if (books.length >= 20) {
+            window.electron.window.dialog({ title: 'Error', text: '예약은 최대 20개 생성가능' });
             return;
         }
 
