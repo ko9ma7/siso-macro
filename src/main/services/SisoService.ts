@@ -21,7 +21,7 @@ class SisoService {
     private listPage: Page;
     private books: Book[] = [];
 
-    private waitTime = 600 * 1000;
+    private waitTime = 1 * 1000;
 
     public storage: StorageService<SisoStorage>;
 
@@ -214,7 +214,7 @@ class SisoService {
 
                     if (!this.checkRunnable(book)) {
                         book.msg += `<br>${book.date} ${book.time}:00:00 은 예약가능한 시간이 아닙니다.`;
-                        await new Promise((resolve) => setTimeout(resolve, 5000));
+                        await new Promise((resolve) => setTimeout(resolve, 1000));
                         continue;
                     }
 

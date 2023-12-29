@@ -20,6 +20,11 @@ const BookCard = (props: Props) => {
     }
 
     const runBook = async () => {
+        if (props.book.doRun) {
+            window.electron.window.dialog({ title: 'Error', text: '이미 실행 중입니다' });
+            return;
+        }
+
         if (!dayjs(dateRef.current.trim()).isValid()) {
             window.electron.window.dialog({ title: 'Error', text: '예약일을 확인해주세요' });
             return;
@@ -36,6 +41,11 @@ const BookCard = (props: Props) => {
     }
 
     const stopBook = async () => {
+        if (!props.book.doRun) {
+            window.electron.window.dialog({ title: 'Error', text: '중단한 예약입니다' });
+            return;
+        }
+
         await window.electron.siso.stopBook({ book: props.book });
     }
 
@@ -57,15 +67,15 @@ const BookCard = (props: Props) => {
             backgroundColor: 'rgba(70, 70, 70, 0.75)'
         },
         content: {
-            position: 'absolute',
+            position: 'fixed',
             top: '40px',
             left: '40px',
             right: '40px',
             bottom: '40px',
             border: '1px solid #494949',
             background: '#14011C',
-            overflow: 'auto',
-            WebkitOverflowScrolling: 'touch',
+            // overflow: 'none',
+            // WebkitOverflowScrolling: 'touch',
             borderRadius: '8px',
             outline: 'none',
             padding: '20px'
@@ -123,8 +133,8 @@ const BookCard = (props: Props) => {
             </div>
 
             <Modal isOpen={isModalOpen} style={modalStyle}>
-                <div dangerouslySetInnerHTML={{ __html: props.book.msg }} />
-                <button className="absolute top-[5px] right-[5px]" onClick={() => setIsModalOpen(false)}>Close</button>
+            <div className="relative h-[700px] overflow-auto" dangerouslySetInnerHTML={{ __html: props.book.msg }} />
+            <button className="absolute top-[5px] right-[5px]" onClick={() => setIsModalOpen(false)}>Close</button>
             </Modal>
         </div>
     );
