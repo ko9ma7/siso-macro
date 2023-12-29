@@ -133,8 +133,8 @@ const BookCard = (props: Props) => {
             </div>
 
             <Modal isOpen={isModalOpen} style={modalStyle}>
+            <button className="relative" onClick={() => setIsModalOpen(false)}>Close</button>
             <div className="relative h-[700px] overflow-auto" dangerouslySetInnerHTML={{ __html: props.book.msg }} />
-            <button className="absolute top-[5px] right-[5px]" onClick={() => setIsModalOpen(false)}>Close</button>
             </Modal>
         </div>
     );
