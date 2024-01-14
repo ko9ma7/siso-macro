@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Book } from "../../common/dto/Book";
 import BookCard from "../components/home/BookCard";
 import { Space } from "../../common/dto/Space";
-import SPACE from "../../common/constants/SpaceEnum";
+import { SPACE_LIST } from "../../common/constants/SpaceList";
 
 const HomePage = () => {
     const [books, setBooks] = useState<Book[]>([]);
@@ -19,7 +19,7 @@ const HomePage = () => {
             return;
         }
 
-        const space = { no: SPACE.JOONGANG.no, name: SPACE.JOONGANG.name } as Space
+        const space = { no: SPACE_LIST.JOONGANG.no, name: SPACE_LIST.JOONGANG.name } as Space
         const book = new Book();
         book.id = crypto.randomUUID();
         book.space = space;

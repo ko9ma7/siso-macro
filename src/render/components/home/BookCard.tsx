@@ -3,14 +3,25 @@ import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { } from '@mui/x-date-pickers/DateTimePicker';
-import { DatePicker, LocalizationProvider, MobileTimePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useEffect, useRef, useState } from "react";
 import Modal from 'react-modal';
+import Dropdown from "../Dropdown/Dropdown";
+import { DropdownValue } from "../../../common/type/DropdownValue";
 
 const BookCard = (props: Props) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const times: DropdownValue[] = [
+        { text: "08:00", value: "08" },
+        { text: "10:00", value: "10" },
+        { text: "12:00", value: "12" },
+        { text: "14:00", value: "14" },
+        { text: "16:00", value: "16" },
+        { text: "18:00", value: "18" },
+        { text: "20:00", value: "20" },
+    ];
+    const [time, setTime] = useState<string>(times[0].value);
     const dateRef = useRef<string>(props.book.date);
-    const timeRef = useRef<string>(props.book.time);
     const statusColor = props.book.doRun ? "text-green-700" : "text-red-700";
 
     useEffect(() => { }, []);
@@ -30,13 +41,8 @@ const BookCard = (props: Props) => {
             return;
         }
 
-        if (!dayjs(timeRef.current.trim()).isValid()) {
-            window.electron.window.dialog({ title: 'Error', text: '예약시간을 확인해주세요' });
-            return;
-        }
-
         props.book.date = dateRef.current;
-        props.book.time = timeRef.current;
+        props.book.time = time;
         await window.electron.siso.runBook({ book: props.book });
     }
 
@@ -51,10 +57,6 @@ const BookCard = (props: Props) => {
 
     const onDateChange = (newValue: Dayjs) => {
         dateRef.current = newValue.format('YYYY-MM-DD');
-    }
-
-    const onTimeChange = (newValue: Dayjs) => {
-        timeRef.current = newValue.format('HH');
     }
 
     const modalStyle = {
@@ -101,21 +103,12 @@ const BookCard = (props: Props) => {
                     <DatePicker
                         label="예약일"
                         defaultValue={dayjs(dateRef.current)}
+                        className="w-full"
                         onChange={onDateChange}
                     />
                 </DemoContainer>
             </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['TimePicker']}>
-                    <MobileTimePicker
-                        label="시간"
-                        views={['hours']}
-                        defaultValue={dayjs(timeRef.current)}
-                        ampm={false}
-                        onChange={onTimeChange}
-                    />
-                </DemoContainer>
-            </LocalizationProvider>
+            <Dropdown values={times} value={time} setValue={setTime} />
 
             <div className="px-6 pt-4 pb-2">
                 <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
@@ -133,8 +126,8 @@ const BookCard = (props: Props) => {
             </div>
 
             <Modal isOpen={isModalOpen} style={modalStyle}>
-            <button className="relative" onClick={() => setIsModalOpen(false)}>Close</button>
-            <div className="relative h-[700px] overflow-auto" dangerouslySetInnerHTML={{ __html: props.book.msg }} />
+                <button className="relative" onClick={() => setIsModalOpen(false)}>Close</button>
+                <div className="relative h-[700px] overflow-auto" dangerouslySetInnerHTML={{ __html: props.book.msg }} />
             </Modal>
         </div>
     );

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ROUTER from "../../common/constants/RouterConst";
+import ROUTER from "../../common/constants/Router";
 
 const LoginPage = () => {
     const refInputId = useRef<HTMLInputElement>();

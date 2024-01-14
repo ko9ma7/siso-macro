@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import ROUTER from "../../common/constants/RouterConst";
+import ROUTER from "../../common/constants/Router";
 
 const Header = () => {
     const routes = [{ to: ROUTER.HOME, menu: '예약' }, { to: ROUTER.LIST, menu: '목록' }]
