@@ -1,4 +1,4 @@
-import ROUTER from '../../common/constants/RouterConst';
+import ROUTER from '../../common/constants/Router';
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { join } from "path";
 import sisoService from "./SisoService";
@@ -75,6 +75,7 @@ class WindowService {
         ipcMain.handle('siso-delete-book', (event, args) => sisoService.deleteBook(args));
         ipcMain.on('siso-run-book', (event, args) => sisoService.runBook(event, args));
         ipcMain.on('siso-stop-book', (event, args) => sisoService.stopBook(event, args));
+        ipcMain.handle('siso-update-book', (event, args) => sisoService.updateBook(event, args));
         ipcMain.handle('siso-books', () => sisoService.getBooks());
     }
 }

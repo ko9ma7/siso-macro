@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electron', {
         runBook: (args) => ipcRenderer.send('siso-run-book', args),
         stopBook: (args) => ipcRenderer.send('siso-stop-book', args),
         getBooks: () => ipcRenderer.invoke('siso-books'),
+        updateBook: (args) => ipcRenderer.invoke('siso-update-book', args),
         onUpdateBooks: (callback) => ipcRenderer.on('update-books', (_event, books) => callback(books)),
     }
 });

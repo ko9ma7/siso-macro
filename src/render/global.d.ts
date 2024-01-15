@@ -19,10 +19,11 @@ declare global {
                 list: () => Promise<Reservation[]>,
                 refreshList: () => Promise<void>,
                 createBook: (args) => Promise<void>,
-                deleteBook: (args) => PRomise<void>,
+                deleteBook: (args) => Promise<void>,
                 runBook: (args) => Promise<void>,
                 stopBook: (args) => Promise<void>,
                 getBooks: () => Promise<Book[]>,
+                updateBook: (args) => Promise<void>,
                 onUpdateBooks: (callback: (books: Book[]) => void) => void,
                 onUpdateBook: (callback: (book: Book) => void) => void,
             }

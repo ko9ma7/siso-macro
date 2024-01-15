@@ -4,13 +4,18 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Modal from 'react-modal';
 import Dropdown from "../Dropdown/Dropdown";
 import { DropdownValue } from "../../../common/type/DropdownValue";
+import { SPACE_LIST } from "../../../common/constants/SpaceList";
 
 const BookCard = (props: Props) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const spaces: DropdownValue[] = [
+        { text: SPACE_LIST.JOONGANG.name, value: SPACE_LIST.JOONGANG.no.toString() },
+        { text: SPACE_LIST.HAMSONG.name, value: SPACE_LIST.HAMSONG.no.toString() },
+    ];
     const times: DropdownValue[] = [
         { text: "08:00", value: "08" },
         { text: "10:00", value: "10" },
@@ -20,11 +25,7 @@ const BookCard = (props: Props) => {
         { text: "18:00", value: "18" },
         { text: "20:00", value: "20" },
     ];
-    const [time, setTime] = useState<string>(times[0].value);
-    const dateRef = useRef<string>(props.book.date);
     const statusColor = props.book.doRun ? "text-green-700" : "text-red-700";
-
-    useEffect(() => { }, []);
 
     const deleteBook = async () => {
         await window.electron.siso.deleteBook({ book: props.book });
@@ -36,13 +37,11 @@ const BookCard = (props: Props) => {
             return;
         }
 
-        if (!dayjs(dateRef.current.trim()).isValid()) {
+        if (!(props.book.date)) {
             window.electron.window.dialog({ title: 'Error', text: '예약일을 확인해주세요' });
             return;
         }
 
-        props.book.date = dateRef.current;
-        props.book.time = time;
         await window.electron.siso.runBook({ book: props.book });
     }
 
@@ -55,8 +54,19 @@ const BookCard = (props: Props) => {
         await window.electron.siso.stopBook({ book: props.book });
     }
 
-    const onDateChange = (newValue: Dayjs) => {
-        dateRef.current = newValue.format('YYYY-MM-DD');
+    const onSpaceChange = async (value: string) => {
+        props.book.spaceNo = parseInt(value);
+        await window.electron.siso.updateBook({ book: props.book });
+    }
+
+    const onDateChange = async (newValue: Dayjs) => {
+        props.book.date = newValue.format('YYYY-MM-DD');
+        await window.electron.siso.updateBook({ book: props.book });
+    }
+
+    const onTimeChange = async (value: string) => {
+        props.book.time = value;
+        await window.electron.siso.updateBook({ book: props.book });
     }
 
     const modalStyle = {
@@ -85,13 +95,14 @@ const BookCard = (props: Props) => {
     };
 
     return (
-        <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 bg-gray-100 bg-opacity-90 p-4">
+        <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 bg-gray-100 bg-opacity-90 p-4 transition-all">
             <div className="px-6 py-4">
-                <div className="font-bold text-gray-700 text-xl mb-2">{props.book.space.name}</div>
+                <Dropdown values={spaces} value={`${props.book.spaceNo}`} onSelect={onSpaceChange} />
+                <div className="py-2"></div>
                 <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{props.book.doRun ? '실행' : '중단'}</span></p>
                 <p className={"text-gray-700 text-base"}>시도횟수: {props.book.tryCnt}</p>
                 <p className={"text-gray-700 text-base"}>
-                    <button className="inline-block bg-blue-600 hover:bg-blue-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
+                    <button className="inline-block bg-blue-600 hover:bg-blue-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                         onClick={() => setIsModalOpen(true)}>
                         로그 보기
                     </button>
@@ -102,24 +113,25 @@ const BookCard = (props: Props) => {
                 <DemoContainer components={['DatePicker']}>
                     <DatePicker
                         label="예약일"
-                        defaultValue={dayjs(dateRef.current)}
+                        defaultValue={dayjs(props.book.date)}
                         className="w-full"
                         onChange={onDateChange}
                     />
                 </DemoContainer>
             </LocalizationProvider>
-            <Dropdown values={times} value={time} setValue={setTime} />
+            <div className="p-2"></div>
+            <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} />
 
             <div className="px-6 pt-4 pb-2">
-                <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
+                <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                     onClick={() => runBook()}>
                     실행
                 </button>
-                <button className="inline-block bg-red-500 hover:bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
+                <button className="inline-block bg-red-500 hover:bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                     onClick={() => stopBook()}>
                     중단
                 </button>
-                <button className="inline-block bg-gray-500 hover:bg-gray-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2"
+                <button className="inline-block bg-gray-500 hover:bg-gray-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                     onClick={() => deleteBook()}>
                     제거
                 </button>
@@ -136,4 +148,5 @@ export default BookCard;
 
 interface Props {
     book: Book;
+    setBooks: React.Dispatch<React.SetStateAction<Book[]>>;
 }
