@@ -7,7 +7,6 @@ const HomePage = () => {
 
     useEffect(() => {
         getBooks();
-
         window.electron.siso.onUpdateBooks(onUpdateBooks);
     }, []);
 

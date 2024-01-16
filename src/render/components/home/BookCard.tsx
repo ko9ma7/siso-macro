@@ -13,8 +13,8 @@ import { SPACE_LIST } from "../../../common/constants/SpaceList";
 const BookCard = (props: Props) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const spaces: DropdownValue[] = [
-        { text: SPACE_LIST.JOONGANG.name, value: SPACE_LIST.JOONGANG.no.toString() },
-        { text: SPACE_LIST.HAMSONG.name, value: SPACE_LIST.HAMSONG.no.toString() },
+        { text: SPACE_LIST.JOONGANG.name, value: `${SPACE_LIST.JOONGANG.no}` },
+        { text: SPACE_LIST.HAMSONG.name, value: `${SPACE_LIST.HAMSONG.no}` },
     ];
     const times: DropdownValue[] = [
         { text: "08:00", value: "08" },
@@ -97,7 +97,7 @@ const BookCard = (props: Props) => {
     return (
         <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 bg-gray-100 bg-opacity-90 p-4 transition-all">
             <div className="px-6 py-4">
-                <Dropdown values={spaces} value={`${props.book.spaceNo}`} onSelect={onSpaceChange} />
+                <Dropdown values={spaces} value={`${props.book.spaceNo}`} onSelect={onSpaceChange} disabled={props.book.doRun} />
                 <div className="py-2"></div>
                 <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{props.book.doRun ? '실행' : '중단'}</span></p>
                 <p className={"text-gray-700 text-base"}>시도횟수: {props.book.tryCnt}</p>
@@ -120,7 +120,7 @@ const BookCard = (props: Props) => {
                 </DemoContainer>
             </LocalizationProvider>
             <div className="p-2"></div>
-            <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} />
+            <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} disabled={props.book.doRun} />
 
             <div className="px-6 pt-4 pb-2">
                 <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
