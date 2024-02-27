@@ -335,14 +335,15 @@ class SisoService {
     checkRunnable(book: Book) {
         const now = dayjs();
         const bookDay = dayjs(book.date);
+        let isBookDay: boolean = false;
 
         if (now.date() < 28) {
-            const isBookDay = now.add(2, 'month').startOf('month').isAfter(bookDay);
-            return isBookDay ? (now.hour() >= 18) : false;
+            isBookDay = now.add(2, 'month').startOf('month').isAfter(bookDay);
         } else {
-            const isBookDay = now.add(3, 'month').startOf('month').isAfter(bookDay);
-            return isBookDay ? (now.hour() >= 18) : false;
+            isBookDay = now.add(3, 'month').startOf('month').isAfter(bookDay);
         }
+
+        return isBookDay;
     }
 
     startDate(date: string): Date {
