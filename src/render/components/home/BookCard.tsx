@@ -9,6 +9,9 @@ import Modal from 'react-modal';
 import Dropdown from "../Dropdown/Dropdown";
 import { DropdownValue } from "../../../common/type/DropdownValue";
 import { SPACE_LIST } from "../../../common/constants/SpaceList";
+import playImg from "@assets/images/play.png";
+import pauseImg from "@assets/images/pause.png";
+import removeImg from "@assets/images/remove.png";
 
 const BookCard = (props: Props) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -123,17 +126,22 @@ const BookCard = (props: Props) => {
             <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} disabled={props.book.doRun} />
 
             <div className="px-6 pt-4 pb-2">
-                <button className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"
+                    className="bi bi-play-btn"
                     onClick={() => runBook()}>
-                    실행
-                </button>
+                        <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
+                    </svg>
+                <span className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all">
+                    <img src={playImg} />
+                </span>
                 <button className="inline-block bg-red-500 hover:bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                     onClick={() => stopBook()}>
-                    중단
+                    <img src={pauseImg} />
                 </button>
                 <button className="inline-block bg-gray-500 hover:bg-gray-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
                     onClick={() => deleteBook()}>
-                    제거
+                    <img src={removeImg} />
                 </button>
             </div>
 

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import ROUTER from "../../common/constants/Router";
+import sonImg from "@assets/images/son.jpg";
 
 const LoginPage = () => {
     const refInputId = useRef<HTMLInputElement>();
@@ -39,7 +40,7 @@ const LoginPage = () => {
     return (
         <>
             <div className="h-[575px] flex items-center justify-between">
-                <img className="h-full opacity-30" src="./images/son.jpg" />
+                <img className="h-full opacity-30" src={sonImg} />
                 <div className="w-full p-5 justify-self-center">
                     <div className="pb-4">
                         <input type="text" id="id" name="id" ref={refInputId}
