@@ -1,6 +1,7 @@
 import { Page } from "puppeteer-core";
 import { SPACE_LIST } from "../constants/SpaceList";
 import dayjs from "dayjs";
+import BookStatus from "../constants/BookStatus";
 
 export class Book {
     public id: string;
@@ -9,6 +10,6 @@ export class Book {
     public date?: string = dayjs().format('YYYY-MM-DD');
     public time?: string = "08";
     public tryCnt: number = 0;
-    public doRun: boolean = false;
+    public status: BookStatus = BookStatus.stop;
     public msg: string = '';
 }

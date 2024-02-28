@@ -8,6 +8,7 @@ import windowService from './WindowService';
 import userService from './UserService';
 import log from "electron-log";
 import dayjs from 'dayjs';
+import BookStatus from '../../common/constants/BookStatus';
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -177,7 +178,7 @@ class SisoService {
                 this.books[idx].date = args.book.date;
                 this.books[idx].time = args.book.time;
                 this.books[idx].tryCnt = args.book.tryCnt;
-                this.books[idx].doRun = args.book.doRun;
+                this.books[idx].status = args.book.status;
                 this.books[idx].msg = args.book.msg;
             }
         }
@@ -198,7 +199,7 @@ class SisoService {
     stopBook(event, args): void {
         const book: Book | undefined = this.getBook(args.book);
         if (book) {
-            book.doRun = false;
+            book.status = BookStatus.stop;
         }
     }
 
@@ -210,7 +211,7 @@ class SisoService {
             book.date = args.book.date;
             book.time = args.book.time;
             book.msg = '';
-            book.doRun = true;
+            book.status = BookStatus.run;
             await this.inhanceSpeed(book.page);
 
             book.page.on('dialog', async (dialog) => {
@@ -221,7 +222,7 @@ class SisoService {
             let tryCnt = 0;
             while (true) {
                 try {
-                    if (!book.doRun) break;
+                    if (book.status !== BookStatus.run) break;
 
                     book.tryCnt = ++tryCnt;
                     book.msg += `<br><br> [ ${tryCnt} ]회 실행`;
@@ -245,7 +246,7 @@ class SisoService {
                 this.sendUpdateBooks();
             }
 
-            book.doRun = false;
+            book.status = BookStatus.stop;
             book.msg += `<br>중단`;
             this.sendUpdateBooks();
             await new Promise((resolve) => setTimeout(resolve, 1000));

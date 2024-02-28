@@ -12,6 +12,7 @@ import { SPACE_LIST } from "../../../common/constants/SpaceList";
 import playImg from "@assets/images/play.png";
 import pauseImg from "@assets/images/pause.png";
 import removeImg from "@assets/images/remove.png";
+import BookStatus from "../../../common/constants/BookStatus";
 
 const BookCard = (props: Props) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -28,14 +29,14 @@ const BookCard = (props: Props) => {
         { text: "18:00", value: "18" },
         { text: "20:00", value: "20" },
     ];
-    const statusColor = props.book.doRun ? "text-green-700" : "text-red-700";
+    const statusColor = props.book.status == BookStatus.run ? "text-green-700" : "text-red-700";
 
     const deleteBook = async () => {
         await window.electron.siso.deleteBook({ book: props.book });
     }
 
     const runBook = async () => {
-        if (props.book.doRun) {
+        if (props.book.status == BookStatus.run) {
             window.electron.window.dialog({ title: 'Error', text: '이미 실행 중입니다' });
             return;
         }
@@ -49,7 +50,7 @@ const BookCard = (props: Props) => {
     }
 
     const stopBook = async () => {
-        if (!props.book.doRun) {
+        if (props.book.status == BookStatus.stop) {
             window.electron.window.dialog({ title: 'Error', text: '중단한 예약입니다' });
             return;
         }
@@ -97,12 +98,13 @@ const BookCard = (props: Props) => {
         }
     };
 
+    const bookStatus: string = (props.book.status == BookStatus.run) ? "실행" : "중단";
     return (
         <div className="max-w-sm rounded-[10px] overflow-hidden shadow-lg col-span-1 bg-gray-100 bg-opacity-90 p-4 transition-all">
             <div className="px-6 py-4">
-                <Dropdown values={spaces} value={`${props.book.spaceNo}`} onSelect={onSpaceChange} disabled={props.book.doRun} />
+                <Dropdown values={spaces} value={`${props.book.spaceNo}`} onSelect={onSpaceChange} disabled={props.book.status == BookStatus.run} />
                 <div className="py-2"></div>
-                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{props.book.doRun ? '실행' : '중단'}</span></p>
+                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{bookStatus}</span></p>
                 <p className={"text-gray-700 text-base"}>시도횟수: {props.book.tryCnt}</p>
                 <p className={"text-gray-700 text-base"}>
                     <button className="inline-block bg-blue-600 hover:bg-blue-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
@@ -123,26 +125,15 @@ const BookCard = (props: Props) => {
                 </DemoContainer>
             </LocalizationProvider>
             <div className="p-2"></div>
-            <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} disabled={props.book.doRun} />
+            <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} disabled={props.book.status == BookStatus.run} />
 
-            <div className="px-6 pt-4 pb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"
-                    className="bi bi-play-btn"
-                    onClick={() => runBook()}>
-                        <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/>
-                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/>
-                    </svg>
-                <span className="inline-block bg-green-600 hover:bg-green-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all">
-                    <img src={playImg} />
-                </span>
-                <button className="inline-block bg-red-500 hover:bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
-                    onClick={() => stopBook()}>
-                    <img src={pauseImg} />
-                </button>
-                <button className="inline-block bg-gray-500 hover:bg-gray-400 rounded-full px-3 py-1 text-sm font-semibold text-white mr-2 mb-2 transition-all"
-                    onClick={() => deleteBook()}>
-                    <img src={removeImg} />
-                </button>
+            <div className="px-6 pt-4 pb-2 flex">
+                {
+                    props.book.status == BookStatus.run
+                        ? (<img className="w-[40px] h-[45px] hover:opacity-80 transition-all cursor-pointer" src={pauseImg} onClick={() => stopBook()} />)
+                        : (<img className="w-[40px] h-[40px] hover:opacity-80 transition-all cursor-pointer" src={playImg} onClick={() => runBook()} />)
+                }
+                <img className="w-[40px] h-[40px] hover:opacity-80 transition-all cursor-pointer" src={removeImg} onClick={() => deleteBook()} />
             </div>
 
             <Modal isOpen={isModalOpen} style={modalStyle}>
