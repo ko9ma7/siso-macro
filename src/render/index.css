@@ -8,6 +8,8 @@
 }
 
 :root {
+  --statusbar-h: 25px;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -78,5 +80,19 @@ button:focus-visible {
 
   button {
     background-color: #f9f9f9;
+  }
+}
+
+@layer components {
+  .statusbar {
+    @apply w-full h-[var(--statusbar-h)];
+  }
+
+  .statusbar > .btn {
+    @apply h-full cursor-pointer;
+  }
+
+  .page {
+    @apply w-full h-[calc(100%-var(--statusbar-h))];
   }
 }

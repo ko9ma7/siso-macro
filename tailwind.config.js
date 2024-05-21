@@ -5,12 +5,27 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        bounce: 'bounce 1s ease-in-out infinte',
+        rebounce: 'rebounce 1s ease-in-out infinte',
+      },
+      keyframes: {
+        bounce: {
+          '0%, 100%': { transform: 'translateY(-8px)' },
+          '50%': { transform: 'translateY(0)' },
+        },
+        rebounce: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+      },
+    },
     fontFamily: {
       'tenada': ['tenada']
     },
   },
-  plugins: [require("tailwind-scrollbar-hide")],
+  plugins: [],
   darkMode: 'dark',
 }
 

@@ -6,7 +6,7 @@ import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useState } from "react";
 import Modal from 'react-modal';
-import Dropdown from "../Dropdown/Dropdown";
+import Dropdown from "../dropdown/Dropdown";
 import { DropdownValue } from "../../../common/type/DropdownValue";
 import { SPACE_LIST } from "../../../common/constants/SpaceList";
 import playImg from "@assets/images/play.png";

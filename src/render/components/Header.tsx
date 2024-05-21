@@ -11,7 +11,7 @@ const Header = () => {
 
         if (res) {
             navigate(ROUTER.LOGIN, { replace: true });
-            window.electron.window.size({ width: 800, height: 600 });
+            window.electron.window.size({ width: 400, height: 500 });
         } else {
             window.electron.window.dialog({ title: 'Error', text: '로그아웃에 실패했습니다. 지속시 관리자에게 문의해주세요.' });
         }

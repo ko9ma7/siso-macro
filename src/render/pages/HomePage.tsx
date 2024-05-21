@@ -6,6 +6,7 @@ const HomePage = () => {
     const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
+        window.electron.window.size({ width: 1200, height: 900 });
         getBooks();
         window.electron.siso.onUpdateBooks(onUpdateBooks);
     }, []);

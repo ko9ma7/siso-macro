@@ -18,8 +18,8 @@ class WindowService {
     createWindow(options?: Electron.BrowserWindowConstructorOptions) {
         const oldWindow = this.window;
         this.window = new BrowserWindow({
-            width: options?.width ?? 800,
-            height: options?.height ?? 600,
+            width: options?.width ?? 400,
+            height: options?.height ?? 500,
             center: true,
             frame: false,
             resizable: false,
