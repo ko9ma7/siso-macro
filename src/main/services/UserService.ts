@@ -1,5 +1,5 @@
-import { UserInfo } from './../../common/dto/UserInfo';
-import { UserStorage } from './../../common/dto/UserStorage';
+import { UserInfo } from './../../common/type/UserInfo';
+import { UserStorage } from './../../common/type/UserStorage';
 import sisoService from "./SisoService";
 import StorageService from "./StorageService";
 

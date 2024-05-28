@@ -12,9 +12,9 @@ function App() {
   const isLoad = useLoaderStore((state) => state.isLoad);
 
   return (
-    <>
+    <div>
+      {isLoad && <Spinner />}
       <div className="app">
-        {isLoad && <Spinner />} 
         <Statusbar />
         <HashRouter>
           <Routes>
@@ -26,7 +26,7 @@ function App() {
           </Routes>
         </HashRouter>
       </div>
-    </>
+    </div>
   );
 }
 

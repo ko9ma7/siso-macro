@@ -1,4 +1,4 @@
-import { Book } from "../../../common/dto/Book";
+import { Book } from "../../../common/type/Book";
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';

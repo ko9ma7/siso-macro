@@ -1,9 +1,9 @@
 /* eslint-disable no-constant-condition */
-import { SisoStorage } from '../../common/dto/SisoStorage';
+import { SisoStorage } from '../../common/type/SisoStorage';
 import puppeteer, { Browser, ElementHandle, Page } from "puppeteer-core";
 import StorageService from "./StorageService";
-import { Reservation } from "../../common/dto/Reservation";
-import { Book } from "../../common/dto/Book";
+import { Reservation } from "../../common/type/Reservation";
+import { Book } from "../../common/type/Book";
 import windowService from './WindowService';
 import userService from './UserService';
 import log from "electron-log";

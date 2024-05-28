@@ -10,12 +10,12 @@ const RootPage = () => {
     }, []);
 
     return (
-        <>
+        <div className="page">
             <Header />
             <div className="">
                 <Outlet context={{ doRefresh: doRefresh, setDoRefresh: setDoRefresh }} />
             </div>
-        </>
+        </div>
     );
 };
 

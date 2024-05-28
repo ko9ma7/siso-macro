@@ -61,26 +61,26 @@ button:focus-visible {
 
 @layer components {
   .app {
-    @apply w-[100vw] h-[100vh] bg-transparent border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden;
+    @apply w-[100vw] h-[100vh] bg-transparent border border-[#D0D5DD] box-content rounded-[8px] overflow-hidden;
   }
 
-  .app > .statusbar {
+  .app .statusbar {
     -webkit-app-region: drag;
     @apply w-full h-[var(--statusbar-h)] bg-[#F2F3F6];
   }
 
-  .app > .statusbar * {
+  .app .statusbar * {
     -webkit-user-select: none;
     -webkit-app-region: drag;
   }
   
-  .app > .statusbar > .btn {
+  .app .statusbar .btn {
     -webkit-app-region: no-drag;
     @apply w-[var(--statusbar-h)] h-full cursor-pointer flex justify-center items-center text-sm;
   }
 
   .page {
-    @apply w-full h-[calc(100%-var(--statusbar-h))] bg-[#FFFFFF];
+    @apply w-full h-full bg-[#E2E8F0];
   }
 
   .card {

@@ -1,5 +1,5 @@
 import ROUTER from '../../common/constants/Router';
-import { BrowserWindow, dialog, ipcMain } from "electron";
+import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
 import sisoService from "./SisoService";
 import userService from "./UserService";
@@ -31,6 +31,12 @@ class WindowService {
             },
         });
         if (oldWindow) oldWindow.close();
+
+        // 새창열기 외부 브라우저로 실행
+        this.window.webContents.setWindowOpenHandler((details) => {
+            shell.openExternal(details.url);
+            return { action: 'deny' };
+        });
 
         this.window.once("ready-to-show", this.window.show);
 

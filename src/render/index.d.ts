@@ -1,5 +1,5 @@
-import { Reservation } from "../common/dto/Reservation";
-import { UserInfo } from "../common/dto/UserInfo";
+import { Reservation } from "../common/type/Reservation";
+import { UserInfo } from "../common/type/UserInfo";
 
 declare global {
     interface Window {
