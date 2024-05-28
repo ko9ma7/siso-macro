@@ -1,4 +1,3 @@
-import './App.css'
 import { } from 'react';
 import { HashRouter, Route, Routes } from "react-router-dom"
 import RootPage from './pages/RootPage';
@@ -14,7 +13,7 @@ function App() {
 
   return (
     <>
-      <div className="w-[100vw] h-[100vh] font-tenada">
+      <div className="app">
         {isLoad && <Spinner />} 
         <Statusbar />
         <HashRouter>

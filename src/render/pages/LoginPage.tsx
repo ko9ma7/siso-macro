@@ -41,20 +41,14 @@ const LoginPage = () => {
     return (
         <>
             <div className="page flex items-center justify-between overflow-hidden">
-                <div className="w-full p-5 justify-self-center">
+                <div className="w-full p-5 flex flex-col items-center">
                     <div className="pb-4">
-                        <input type="text" id="id" name="id" ref={refInputId}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-60 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            placeholder="ID" required
-                        />
+                        <input type="text" name="id" ref={refInputId} className="bg-[#F2F3F6] focus:outline-[#D0D0D0] rounded-lg w-60 p-2.5" placeholder="ID" required />
                     </div>
                     <div className="pb-4">
-                        <input type="password" id="pw" name="pw" ref={refInputPw}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-60 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            placeholder="Password" onKeyDown={handleOnKeyDownPw} required
-                        />
+                        <input type="text" name="pw" ref={refInputPw} className="bg-[#F2F3F6] focus:outline-[#D0D0D0] rounded-lg w-60 p-2.5" placeholder="Password" onKeyDown={handleOnKeyDownPw} required />
                     </div>
-                    <button className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    <button className="bg-[#F2F3F6] py-2.5 px-5 me-2 mb-2 text-sm font-medium hover:border-0 focus:outline-[#D0D0D0] rounded-full hover:bg-gray-100"
                         onClick={() => login()}>
                         LOGIN
                     </button>

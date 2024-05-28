@@ -18,13 +18,13 @@ const Header = () => {
     }
 
     return (
-        <header className="bg-slate-800 w-full h-[100px]">
+        <header className="w-full h-[100px] bg-[#FFFFFF] border-b border-[#D0D5DD]">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
                 <div className="cursor-pointer flex">
                     {
                         ...routes.map((route) => {
-                            const isSelected = location.pathname === route.to ? 'text-gray-400' : 'text-white';
-                            return <Link className={`cursor-pointer rounded-[10px] mr-2 p-2 ${isSelected} hover:text-gray-400 `} to={route.to}>{route.menu}</Link>
+                            const isSelected = location.pathname === route.to ? 'text-black' : 'text-gray-400';
+                            return <Link className={`cursor-pointer rounded-[10px] mr-2 p-2 ${isSelected} hover:text-gray-600 `} to={route.to}>{route.menu}</Link>
                         })
                     }
                 </div>

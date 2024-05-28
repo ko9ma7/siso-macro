@@ -6,7 +6,6 @@ const HomePage = () => {
     const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        window.electron.window.size({ width: 1200, height: 900 });
         getBooks();
         window.electron.siso.onUpdateBooks(onUpdateBooks);
     }, []);
@@ -33,7 +32,7 @@ const HomePage = () => {
     };
 
     return (
-        <div className="overflow-auto scrollbar-hide p-4">
+        <div className="page overflow-auto scrollbar-hide p-4">
             <div className="mb-5">
                 <svg className="bi bi-plus-circle rounded-full p-1 cursor-pointer hover:bg-white hover:text-black transition-all" onClick={creaetBook}
                     xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
@@ -42,11 +41,10 @@ const HomePage = () => {
                 </svg>
             </div>
 
-            <div className="w-full grid grid-cols-3 gap-4 transition-all">
+            <ul className="w-full grid grid-cols-3 gap-4 transition-all">
                 {books.map((book) => (<BookCard book={book} setBooks={setBooks} />))}
-            </div>
+            </ul>
         </div >
-
     );
 };
 

@@ -1,3 +1,6 @@
+import closeIco from "@assets/images/ico_close.png";
+import miniIco from "@assets/images/ico_mini.png";
+
 const Statusbar: React.FC = () => {
     const minimizeWindow = () => {
         window.electron.window.minimize();
@@ -9,14 +12,8 @@ const Statusbar: React.FC = () => {
 
     return (
         <div className="statusbar flex justify-end">
-            <div className="btn text-white hover:bg-[#2c2c2c] focus:ring-4 focus:outline-none font-medium text-sm px-2 py-0.5 text-center"
-                onClick={minimizeWindow}>
-                ㅡ
-            </div>
-            <div className="btn  text-white hover:bg-red-500 focus:ring-4 focus:outline-none font-medium text-sm px-2 py-0.5 text-center"
-                onClick={closeWindow}>
-                ⨉
-            </div>
+            <img src={miniIco} className="btn hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={minimizeWindow} />
+            <img src={closeIco} className="btn rounded-tr-[8px] hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={closeWindow} />
         </div>
     );
 }

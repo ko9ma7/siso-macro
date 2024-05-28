@@ -23,6 +23,7 @@ class WindowService {
             center: true,
             frame: false,
             resizable: false,
+            transparent: true,
             maximizable: false, // 최대화 비활성화
             show: false,
             webPreferences: {
