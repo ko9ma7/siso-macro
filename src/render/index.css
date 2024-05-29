@@ -34,28 +34,33 @@ h1 {
   line-height: 1.1;
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     @apply bg-transparent text-[#213547];
   }
 
   a:hover {
-    color: #747bff;
+    @apply text-[#747bff]
   }
 }
 
 @layer base {
   html {
-    @apply bg-transparent items-center font-tenada overflow-hidden;
+    @apply bg-transparent items-center overflow-hidden;
   }
 
   body {
     @apply bg-transparent;
+  }
+
+  input {
+    @apply outline-none font-medium;
+  }
+
+  button {
+    @apply text-[13px] text-[#475467] bg-[#FFFFFF] border border-[#D0D5DD] font-medium outline-none;
+    @apply hover:text-[#FFFFFF] hover:bg-[#475467];
+    @apply active:text-[#FFFFFF] active:bg-[#475467] active:font-extrabold;
   }
 }
 

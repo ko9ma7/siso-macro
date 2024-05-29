@@ -20,15 +20,17 @@ const Header = () => {
     return (
         <header className="w-full h-[100px] bg-[#FFFFFF] border-b border-[#D0D5DD]">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-                <div className="cursor-pointer flex">
+                <div className="cursor-pointer flex gap-2">
                     {
                         ...routes.map((route) => {
-                            const isSelected = location.pathname === route.to ? 'text-black' : 'text-gray-400';
-                            return <Link className={`cursor-pointer rounded-[10px] mr-2 p-2 ${isSelected} hover:text-gray-600 `} to={route.to}>{route.menu}</Link>
+                            const isSelected = location.pathname === route.to;
+                            return <Link to={route.to} className={`${isSelected ? "font-extrabold" : "font-medium"} text-[#0C111D] hover:text-[#0C111D] hover:font-medium`}>
+                                {route.menu}
+                            </Link>
                         })
                     }
                 </div>
-                <button className="cursor-pointer flex" onClick={logout}>
+                <button className="rounded-full px-4 py-2" onClick={logout}>
                     로그아웃
                 </button>
             </nav>

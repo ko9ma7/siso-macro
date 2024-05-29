@@ -1,10 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ROUTER from "../../common/constants/Router";
 import useLoaderStore from "../store/useLoaderStore";
+import icoHide from "@assets/images/user/ico_hide.png";
+import icoShow from "@assets/images/user/ico_show.png";
 
 const LoginPage = () => {
     const setIsLoad = useLoaderStore((state) => state.setIsLoad);
+    const [showPass, setShowPass] = useState<boolean>(false);
     const refInputId = useRef<HTMLInputElement>();
     const refInputPw = useRef<HTMLInputElement>();
     const navigate = useNavigate();
@@ -42,15 +45,17 @@ const LoginPage = () => {
         <>
             <div className="page flex items-center justify-between overflow-hidden">
                 <div className="w-full p-5 flex flex-col items-center">
-                    <div className="pb-4">
-                        <input type="text" name="id" ref={refInputId} className="bg-[#F2F3F6] focus:outline-[#D0D0D0] rounded-lg w-60 p-2.5" placeholder="ID" required />
+                    <div className="w-[240px] bg-[#F2F3F6] border border-transparent focus-within:border-[#D0D0D0] shadow-lg flex items-center rounded-[8px] mb-4">
+                        <input ref={refInputId} type="text" name="id" placeholder="ID" required
+                            className="bg-transparent rounded-lg w-60 p-2.5" />
                     </div>
-                    <div className="pb-4">
-                        <input type="text" name="pw" ref={refInputPw} className="bg-[#F2F3F6] focus:outline-[#D0D0D0] rounded-lg w-60 p-2.5" placeholder="Password" onKeyDown={handleOnKeyDownPw} required />
+                    <div className="w-[240px] bg-[#F2F3F6] border border-transparent focus-within:border-[#D0D0D0] shadow-lg flex items-center rounded-[8px] mb-4 pr-2.5">
+                        <input ref={refInputPw} type={showPass ? "text" : "password"} name="pw" placeholder="Password" onKeyDown={handleOnKeyDownPw} required
+                            className="bg-transparent rounded-lg w-60 p-2.5"  />
+                        <img width={20} src={showPass ? icoHide : icoShow} className="cursor-pointer" onClick={() => setShowPass((visible) => !visible)} />
                     </div>
-                    <button className="bg-[#F2F3F6] py-2.5 px-5 me-2 mb-2 text-sm font-medium hover:border-0 focus:outline-[#D0D0D0] rounded-full hover:bg-gray-100"
-                        onClick={() => login()}>
-                        LOGIN
+                    <button className="text-[12px] px-4 py-2 rounded-[8px]" onClick={() => login()}>
+                        Login
                     </button>
                 </div>
             </div>
