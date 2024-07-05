@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Header from "../components/Header";
+import Statusbar from "../components/Statusbar";
 
 const RootPage = () => {
     const [doRefresh, setDoRefresh] = useState(false)
 
-    useEffect(() => {
-        window.electron.window.size({ width: 1200, height: 900 });
-    }, []);
-
     return (
         <div className="page">
-            <Header />
-            <div className="">
+            <Statusbar />
+            <div className="h-[calc(100%-var(--statusbar-h))]">
                 <Outlet context={{ doRefresh: doRefresh, setDoRefresh: setDoRefresh }} />
             </div>
         </div>

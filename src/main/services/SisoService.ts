@@ -9,6 +9,8 @@ import userService from './UserService';
 import log from "electron-log";
 import dayjs from 'dayjs';
 import BookStatus from '../../common/constants/BookStatus';
+import { ENCRYPT_KEY } from '../../common/constants/Encrypt';
+import CryptoJS from "crypto-js";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -22,7 +24,7 @@ class SisoService {
     private listPage: Page;
     private books: Book[] = [];
 
-    private waitTime = 1 * 1000;
+    private waitTime = 5 * 1000;
 
     public storage: StorageService<SisoStorage>;
 
@@ -55,16 +57,22 @@ class SisoService {
     getBook = (book: Book): Book | undefined => this.books.find((i) => i.id == book.id);
 
     // 로그인
-    async login(id: string, pw: string): Promise<boolean> {
+    async login(
+        id: string = "U2FsdGVkX1+SOI2092gq5R5//wBlh31wSl/XP2UQqgE=",
+        pw: string = "U2FsdGVkX1/ctjYRVgfyCBLI5OB5jbTsgZeBvZizhO8=",
+    ): Promise<boolean> {
         let isLogin: boolean = false;
 
         try {
+            id = CryptoJS.AES.decrypt(id, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8);
+            pw = CryptoJS.AES.decrypt(pw, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8);
+
             await new Promise((resolve) => setTimeout(resolve, 1000));
             const params = new URLSearchParams({ key: '701000' });
             await this.loginPage.goto(this.host + this.paths.login + '?' + params.toString());
 
             this.loginPage.on('dialog', async (dialog) => {
-                if (dialog.message() == '일치하는 로그인 정보(아이디/암호)가 없습니다') {
+                if (dialog.message().includes("일치하는 로그인")) {
                     await dialog.accept();
                 }
             });
@@ -140,7 +148,7 @@ class SisoService {
                 const url = this.host + this.paths.list + '?' + params.toString();
                 await this.listPage.goto(url);
             } catch (e) {
-                console.log(e);
+                log.error(e);
             }
 
             const rows = await this.listPage.$$eval('table.myreservation tbody tr', rows => {
@@ -216,6 +224,7 @@ class SisoService {
 
             book.page.on('dialog', async (dialog) => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
+                log.error(dialog.message());
                 await dialog.accept();
             });
 
@@ -230,18 +239,18 @@ class SisoService {
 
                     if (!this.checkRunnable(book)) {
                         book.msg += `<br>${book.date} ${book.time}:00:00 은 예약가능한 시간이 아닙니다.`;
-                        await new Promise((resolve) => setTimeout(resolve, 1000));
+                        await new Promise((resolve) => setTimeout(resolve, this.waitTime));
                         continue;
                     }
 
                     const res = await this.book(book);
                     book.msg += `<br>결과: ${res}`;
 
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    await new Promise((resolve) => setTimeout(resolve, this.waitTime));
                 } catch (error) {
                     log.error(error);
                     book.msg += `<br>에러: ${error}`;
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
+                    await new Promise((resolve) => setTimeout(resolve, this.waitTime));
                 }
                 this.sendUpdateBooks();
             }
@@ -249,7 +258,7 @@ class SisoService {
             book.status = BookStatus.stop;
             book.msg += `<br>중단`;
             this.sendUpdateBooks();
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, this.waitTime));
         }
     }
 
@@ -269,14 +278,18 @@ class SisoService {
         });
         const url = this.host + this.paths.book + '?' + params.toString();
         await book.page.goto(url);
-        book.msg += `<br>진행중: 사이트 접속 (${url})`;
+        log.info(`${book.spaceNo} ${book.date}: `, `예약 사이트 접속`)
 
         const agrApp4 = await book.page.waitForSelector('#agrApp4', { timeout: this.waitTime });
+        if (!agrApp4) log.error(`${book.spaceNo} ${book.date}: `, `#agrApp4 를 찾지 못하였습니다.`);
         await agrApp4?.click();
+
         const submitBtn = await book.page.waitForSelector('input[type="submit"]', { timeout: this.waitTime });
+        if (!submitBtn) log.error(`${book.spaceNo} ${book.date}: `, `input[type="submit"] 를 찾지 못하였습니다.`);
         await submitBtn?.click();
-        book.msg += `<br>진행중: 준수사항 동의`;
-        await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
+
+        const res = await book.page.waitForResponse((res) => res.status() === 200, { timeout: this.waitTime });
+        if (!res.ok) log.error(`${book.spaceNo} ${book.date}: `, `준수사항 동의 실패`);
 
         const inputAddr = await book.page.waitForSelector('input#addr', { timeout: this.waitTime });
         await inputAddr?.type('경기도 시흥시 승지로 34');
@@ -294,7 +307,7 @@ class SisoService {
         );
         const inputPurpose = await book.page.waitForSelector('input#use_purpose', { timeout: this.waitTime });
         await inputPurpose?.type('풋살 경기');
-        book.msg += `<br>진행중: 예약 등록사항 입력`;
+        log.info(`${book.spaceNo} ${book.date}: `, `예약 등록사항 입력 완료`)
 
         const elems = await book.page.$$(`.sel_startTime_li a`);
         for (const elem of elems) {
@@ -302,20 +315,25 @@ class SisoService {
                 return element.textContent?.trim();
             }, elem);
 
-            if (textContent?.trim() === `${book.time}:00`) {
-                await elem.click();
-
-                const endTime = await book.page.waitForSelector('#sel_endTime_0', { timeout: this.waitTime });
-                await endTime?.click();
-
-                const btn = await book.page.waitForSelector('a.btn_style1', { timeout: this.waitTime });
-                await btn?.click();
-
-                await book.page.waitForFunction(() => !!window.alert, { timeout: this.waitTime });
-
-                book.msg += `<br>진행중: 예약 완료`;
-                return `${book.date} ${book.time}`; // 원하는 요소를 찾았으면 루프 종료
+            if (textContent?.trim() !== `${book.time}:00`) {
+                continue;
             }
+
+            log.info(`${book.spaceNo} ${book.date}: `, `시작일을 찾았습니다.`);
+            await elem.click();
+
+            const endTime = await book.page.waitForSelector('li#sel_endTime_0 a', { timeout: this.waitTime });
+            if (!endTime) log.error(`${book.spaceNo} ${book.date}: `, `종료일을 찾지 못했습니다.`);
+            await endTime?.click();
+
+            const btn = await book.page.waitForSelector('a.btn_style1', { timeout: this.waitTime });
+            if (!btn) log.error(`${book.spaceNo} ${book.date}: `, `예약 버튼을 찾지 못했습니다.`);
+            await btn?.click();
+
+            const handle = await book.page.waitForFunction(() => !!window.alert, { timeout: this.waitTime });
+            log.info(`${book.spaceNo} ${book.date}: `, `예약 완료`);
+
+            return `${book.date} ${book.time}`; // 원하는 요소를 찾았으면 루프 종료
         }
 
         return null;

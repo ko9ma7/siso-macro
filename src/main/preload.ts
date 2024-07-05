@@ -2,8 +2,10 @@ import { ipcRenderer, contextBridge } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
     window: {
+        load: (args) => ipcRenderer.send('window.load', args),
         minimize: () => ipcRenderer.send('window-minimize'),
         close: () => ipcRenderer.send('window-close'),
+        onGetSize: (callback) => ipcRenderer.on("window.onGetSize", (evt, data) => callback(data)),
         size: (args) => ipcRenderer.send('window-size', args),
         dialog: (args) => ipcRenderer.send('window-dialog', args),
     },

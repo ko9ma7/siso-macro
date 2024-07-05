@@ -6,7 +6,7 @@ const Dropdown = (props: Props) => {
         props.onSelect(value);
     }
     return (
-        <select className="w-full bg-transparent rounded-[4px] border-[1px] border-[black] px-2 py-4 text-black"
+        <select className="w-[80px] h-[56px] bg-transparent rounded-[4px] border-[1px] border-[#D0D5DD] px-2 text-black"
             defaultValue={props.value} onChange={onChange} disabled={props.disabled}>
             {
                 props.values.map((value: DropdownValue) => {

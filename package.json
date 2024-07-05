@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "main": "./app/main/main.js",
   "scripts": {
-    "compile": "tsc -p tsconfig.electron.json",
-    "dev": "concurrently \"SET APP_ENV=dev && vite\" \"wait-on http://localhost:5173 && npm run compile && SET APP_ENV=dev && electron .\"",
-    "build": "tsc && vite build && npm run compile && electron-builder",
+    "tsc": "tsc -p tsconfig.electron.json",
+    "dev": "concurrently \"SET APP_ENV=dev && vite\" \"wait-on http://localhost:5173 && npm run tsc && SET APP_ENV=dev && electron .\"",
+    "build": "tsc && vite build && npm run tsc && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.0",
     "@mui/x-date-pickers": "^6.18.4",
+    "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "electron-log": "^5.0.1",
@@ -32,6 +33,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",

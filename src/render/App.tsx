@@ -1,27 +1,32 @@
-import { } from 'react';
+import { useEffect, useRef } from 'react';
 import { HashRouter, Route, Routes } from "react-router-dom"
 import RootPage from './pages/RootPage';
-import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
-import ListPage from './pages/ListPage';
-import Statusbar from './components/Statusbar';
 import Spinner from './components/common/Spinner';
 import useLoaderStore from './store/useLoaderStore';
 
 function App() {
   const isLoad = useLoaderStore((state) => state.isLoad);
+  const appRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.electron.window.onGetSize(({ width, height }) => {
+      if (appRef.current) {
+        appRef.current.style.width = `${width}px`;
+        appRef.current.style.height = `${height}px`;
+      }
+    });
+  }, []);
 
   return (
+  
     <div>
       {isLoad && <Spinner />}
-      <div className="app">
-        <Statusbar />
+      <div ref={appRef} className="app">
         <HashRouter>
           <Routes>
-            <Route element={<LoginPage />} path="/login" />
             <Route element={<RootPage />} >
               <Route element={<HomePage />} path="/home" />
-              <Route element={<ListPage />} path="/list" />
             </Route>
           </Routes>
         </HashRouter>

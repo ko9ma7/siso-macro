@@ -13,13 +13,13 @@ class WindowService {
         this.ipcListener();
     }
 
-    getWindow = (): BrowserWindow => this.window;
+    public getWindow = (): BrowserWindow => this.window;
 
-    createWindow(options?: Electron.BrowserWindowConstructorOptions) {
+    public createWindow(options?: Electron.BrowserWindowConstructorOptions) {
         const oldWindow = this.window;
         this.window = new BrowserWindow({
-            width: options?.width ?? 400,
-            height: options?.height ?? 500,
+            width: options?.width ?? 1020,
+            height: options?.height ?? 680,
             center: true,
             frame: false,
             resizable: false,
@@ -43,30 +43,28 @@ class WindowService {
         if (global.isDev) this.window.webContents.openDevTools({ mode: "detach" });
     }
 
-    async loadWindow() {
-        const route = ROUTER.LOGIN;
-
+    async loadWindow(route: string = ROUTER.HOME) {
         if (global.isDev) {
             this.window.loadURL(`${this.host}/#${route}`);
         } else {
             this.window.loadFile(`${this.host}`, { hash: route });
         }
 
-        // 메인 윈도우가 닫힐 때의 이벤트 핸들러
-        this.window.on('closed', () => {
-            // 메인 윈도우 참조 해제
-            // this.window = null;
-        });
+        this.setWindowSize(1020, 680);
+
+        this.window.webContents.on('did-finish-load', (evt) => {
+            let [width, height] = this.window.getSize();
+            this.window.webContents.send('window.onGetSize', {width, height})
+        })
     }
 
     setWindowSize(width: number, height: number) {
-        this.window.setResizable(true);
         this.window.setSize(width, height);
-        this.window.setResizable(false);
         this.window.center();
     }
 
     ipcListener() {
+        ipcMain.on('window.load', (event, args) => this.loadWindow(args.route));
         ipcMain.on('window-close', () => this.window.close());
         ipcMain.on('window-minimize', () => this.window.minimize());
         ipcMain.on('window-size', (event, args) => this.setWindowSize(args.width, args.height));

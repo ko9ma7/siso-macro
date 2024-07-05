@@ -9,6 +9,9 @@
 
 :root {
   --statusbar-h: 25px;
+  --red: #E50914;
+  --white: #FFFFFF;
+  --black: #000000;
 }
 
 a {
@@ -45,6 +48,18 @@ h1 {
 }
 
 @layer base {
+  ::-webkit-scrollbar {
+    @apply w-1 h-1;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-[#E2E8F0] rounded-[4px];
+  }
+
   html {
     @apply bg-transparent items-center overflow-hidden;
   }
@@ -58,20 +73,20 @@ h1 {
   }
 
   button {
-    @apply text-[13px] text-[#475467] bg-[#FFFFFF] border border-[#D0D5DD] font-medium outline-none;
+    @apply text-[13px] text-[#475467] bg-[#FFFFFF] font-bold outline-none;
     @apply hover:text-[#FFFFFF] hover:bg-[#475467];
-    @apply active:text-[#FFFFFF] active:bg-[#475467] active:font-extrabold;
+    @apply active:shadow-lg;
   }
 }
 
 @layer components {
   .app {
-    @apply w-[100vw] h-[100vh] bg-transparent border border-[#D0D5DD] box-content rounded-[8px] overflow-hidden;
+    @apply bg-transparent border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden;
   }
 
   .app .statusbar {
     -webkit-app-region: drag;
-    @apply w-full h-[var(--statusbar-h)] bg-[#F2F3F6];
+    @apply w-full h-[var(--statusbar-h)] bg-[#F2F3F6] rounded-t-[8px];
   }
 
   .app .statusbar * {

@@ -5,9 +5,11 @@ declare global {
     interface Window {
         electron: {
             window: {
+                load: (args: { route: string }) => void,
                 minimize: () => void,
                 close: () => void,
                 size: (args) => void,
+                onGetSize: (callback: ({ width: number, height: number }) => void) => void,
                 dialog: (args: { title?: string, text?: string }) => void,
             },
             user: {

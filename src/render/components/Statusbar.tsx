@@ -12,8 +12,8 @@ const Statusbar: React.FC = () => {
 
     return (
         <div className="statusbar flex justify-between items-center">
-            <span className="text-[9px] font-extrabold ml-[4px]">Siso-Auto-Booking</span>
-            <div className="flex justify-end">
+            <span className="text-[12px] font-medium ml-[4px]">Siheung Siso</span>
+            <div className="h-full flex justify-end">
                 <img src={miniIco} className="btn hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={minimizeWindow} />
                 <img src={closeIco} className="btn rounded-tr-[8px] hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={closeWindow} />
             </div>
