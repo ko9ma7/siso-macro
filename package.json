@@ -1,7 +1,7 @@
 {
   "name": "siso-auto-book",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./app/main/main.js",
   "scripts": {
     "tsc": "tsc -p tsconfig.electron.json",
