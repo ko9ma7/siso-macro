@@ -21,9 +21,6 @@ module.exports = {
         },
       },
     },
-    fontFamily: {
-      'tenada': ['tenada']
-    },
   },
   plugins: [],
   // darkMode: 'dark',

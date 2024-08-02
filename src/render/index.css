@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'tenada';
-  src: url('/fonts/tenada.ttf');
-}
-
 :root {
   --statusbar-h: 25px;
   --red: #E50914;

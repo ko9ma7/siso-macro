@@ -35,6 +35,7 @@ class WindowService {
             },
         });
         if (oldWindow) oldWindow.close();
+        this.window.webContents.session.clearCache();
 
         // 새창열기 외부 브라우저로 실행
         this.window.webContents.setWindowOpenHandler((details) => {
