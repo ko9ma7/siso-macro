@@ -6,9 +6,9 @@ const RootPage = () => {
     const [doRefresh, setDoRefresh] = useState(false)
 
     return (
-        <div className="page">
+        <div className="root">
             <Statusbar />
-            <div className="h-[calc(100%-var(--statusbar-h))]">
+            <div className="page">
                 <Outlet context={{ doRefresh: doRefresh, setDoRefresh: setDoRefresh }} />
             </div>
         </div>

@@ -15,14 +15,18 @@ class WindowService {
 
     public getWindow = (): BrowserWindow => this.window;
 
-    public createWindow(options?: Electron.BrowserWindowConstructorOptions) {
+    public createWindow() {
         const oldWindow = this.window;
         this.window = new BrowserWindow({
-            width: options?.width ?? 1020,
-            height: options?.height ?? 680,
+            minWidth: 640,
+            width: 1280,
+            maxWidth: 1280,
+            minHeight: 480,
+            height: 720,
+            maxHeight: 720,
             center: true,
             frame: false,
-            resizable: false,
+            resizable: true,
             transparent: true,
             maximizable: false, // 최대화 비활성화
             show: false,

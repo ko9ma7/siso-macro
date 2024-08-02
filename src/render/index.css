@@ -80,27 +80,27 @@ h1 {
 }
 
 @layer components {
-  .app {
-    @apply bg-transparent border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden;
+  .root {
+    @apply w-[100vw] h-[100vh] border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden;
   }
 
-  .app .statusbar {
+  .root .statusbar {
     -webkit-app-region: drag;
     @apply w-full h-[var(--statusbar-h)] bg-[#F2F3F6] rounded-t-[8px];
   }
 
-  .app .statusbar * {
+  .root .statusbar * {
     -webkit-user-select: none;
     -webkit-app-region: drag;
   }
   
-  .app .statusbar .btn {
+  .root .statusbar .btn {
     -webkit-app-region: no-drag;
     @apply w-[var(--statusbar-h)] h-full cursor-pointer flex justify-center items-center text-sm;
   }
 
-  .page {
-    @apply w-full h-full bg-[#E2E8F0];
+  .root .page {
+    @apply w-full h-[calc(100%-var(--statusbar-h))] bg-[#E2E8F0];
   }
 
   .card {

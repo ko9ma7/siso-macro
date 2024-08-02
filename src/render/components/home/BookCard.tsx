@@ -6,11 +6,7 @@ import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import Dropdown from "../dropdown/Dropdown";
 import { DropdownValue } from "../../../common/type/DropdownValue";
-import playImg from "@assets/images/play.png";
-import stopImg from "@assets/images/stop.png";
-import removeImg from "@assets/images/remove.png";
 import BookStatus from "../../../common/constants/BookStatus";
-import useBookStore from "../../store/useBookStore";
 
 const BookCard = (props: Props) => {
     const times: DropdownValue[] = [
@@ -29,6 +25,18 @@ const BookCard = (props: Props) => {
     }
 
     const runBook = async () => {
+        try {
+            if (props.book.status == BookStatus.run) {
+                stopBook();
+            } else {
+                book();
+            }
+        } catch (e) {
+
+        }
+    }
+
+    const book = async () => {
         if (props.book.status == BookStatus.run) {
             window.electron.window.dialog({ title: 'Error', text: '이미 실행 중입니다' });
             return;
@@ -52,6 +60,7 @@ const BookCard = (props: Props) => {
     }
 
     const onDateChange = async (newValue: Dayjs) => {
+
         props.book.date = newValue.format('YYYY-MM-DD');
         await window.electron.siso.updateBook({ book: props.book });
     }
@@ -63,37 +72,28 @@ const BookCard = (props: Props) => {
 
     const bookStatus: string = (props.book.status == BookStatus.run) ? "실행" : "중단";
     return (
-        <div className={`relative w-full flex justify-between items-center rounded-[10px]
-            overflow-hidden shadow col-span-1 bg-gray-100 bg-opacity-90 p-4 mb-2 transition-all
+        <div className={`relative w-full rounded-[10px] overflow-hidden shadow bg-gray-100 bg-opacity-90 p-4 transition-all
             border-2 ${props.book.status == BookStatus.run ? "border-blue-500" : "border-transparent"}
             `}>
-            <div>
-                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{bookStatus}</span></p>
-                <p className={"text-gray-700 text-base"}>시도횟수: {props.book.tryCnt}</p>
-            </div>
-
-            <div className="flex gap-2">
+            <div className="flex gap-2 justify-between items-center mb-2">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
-                        <DatePicker
-                            label="예약일"
-                            defaultValue={dayjs(props.book.date)}
-                            className="w-[80px]"
-                            onChange={onDateChange}
-                        />
+                        <DatePicker label="예약일" defaultValue={dayjs(props.book.date)} onChange={onDateChange} />
                     </DemoContainer>
                 </LocalizationProvider>
                 <Dropdown values={times} value={props.book.time} onSelect={onTimeChange} disabled={props.book.status == BookStatus.run} />
             </div>
 
-            <div className="flex gap-2">
-                <img className="w-[36px] h-[36px] hover:opacity-80 transition-all cursor-pointer"
-                    src={props.book.status == BookStatus.run ? stopImg : playImg}
-                    onClick={props.book.status == BookStatus.run ? () => stopBook() : () => runBook()}
-                />
-                <img className="w-[36px] h-[36px] hover:opacity-80 transition-all cursor-pointer" src={removeImg}
-                    onClick={() => deleteBook()}
-                />
+            <div className="flex gap-2 justify-between items-center">
+                <p className={"text-gray-700 text-base"}>상태: <span className={statusColor}>{bookStatus}</span></p>
+                <div className="flex gap-2">
+                    <button className="rounded-[6px] px-10 py-2 border border-[#2D2D2D]" onClick={() => runBook()}>
+                        {props.book.status == BookStatus.run ? "중단" : "예약"}
+                    </button>
+                    <button className="rounded-[6px] px-10 py-2 border border-red-600 text-red-600" onClick={() => deleteBook()}>
+                        삭제
+                    </button>
+                </div>
             </div>
 
         </div>

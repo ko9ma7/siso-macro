@@ -8,7 +8,6 @@ export class Book {
     public spaceNo?: number;
     public date?: string = dayjs().format('YYYY-MM-DD');
     public time?: string = "08";
-    public tryCnt: number = 0;
     public status: BookStatus = BookStatus.stop;
     public msg: string = '';
 }

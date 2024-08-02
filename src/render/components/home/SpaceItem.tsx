@@ -5,7 +5,7 @@ const SpaceItem: React.FC<Props> = ({ space }) => {
     const { space: selected, setSpace } = useSpaceStore();
 
     return (
-        <li className={`relative w-full flex flex-col items-center border-2 rounded-[8px] cursor-pointer transition-all hover:shadow overflow-clip
+        <li className={`relative w-full items-center border-2 rounded-[8px] cursor-pointer transition-all hover:shadow overflow-clip mb-2
             ${selected?.no === space.no ? "border-blue-500" : "border-[#E4E7EC]"}`}
             onClick={() => setSpace(space)}
         >

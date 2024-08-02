@@ -185,7 +185,6 @@ class SisoService {
                 this.books[idx].spaceNo = args.book.spaceNo;
                 this.books[idx].date = args.book.date;
                 this.books[idx].time = args.book.time;
-                this.books[idx].tryCnt = args.book.tryCnt;
                 this.books[idx].status = args.book.status;
                 this.books[idx].msg = args.book.msg;
             }
@@ -214,6 +213,7 @@ class SisoService {
     // 예약 실행
     async runBook(event, args): Promise<void> {
         const book: Book | undefined = this.getBook(args.book);
+        let tryCnt = 0;
 
         if (book) {
             book.date = args.book.date;
@@ -228,13 +228,11 @@ class SisoService {
                 await dialog.accept();
             });
 
-            let tryCnt = 0;
             while (true) {
                 try {
                     if (book.status !== BookStatus.run) break;
 
-                    book.tryCnt = ++tryCnt;
-                    book.msg += `<br><br> [ ${tryCnt} ]회 실행`;
+                    book.msg += `<br><br> [ ${++tryCnt} ]회 실행`;
                     this.sendUpdateBooks();
 
                     if (!this.checkRunnable(book)) {
