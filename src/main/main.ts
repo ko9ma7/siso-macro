@@ -3,7 +3,7 @@ setGlobal();
 
 import { app } from 'electron';
 import windowService from './services/WindowService';
-import sisoService from './services/SisoService';
+import { sisoService } from './services/SisoService';
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) app.quit();
@@ -23,6 +23,6 @@ app.on('second-instance', () => {
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
     }
 })

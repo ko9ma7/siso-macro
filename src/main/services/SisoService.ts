@@ -39,7 +39,10 @@ class SisoService {
             // headless: !global.isDev,
             headless: true,
             defaultViewport: { width: 1920, height: 1080 }, // 브라우저 창 크기 설정 (기본값: 800x600)
-            args: ['--start-maximized'], // 최대화된 창으로 시작
+            args: [
+                '--start-maximized', // 최대화된 창으로 시작
+                '--headless=old', // FIXME: workaround for issue [#13012]: https://github.com/puppeteer/puppeteer/issues/13012
+            ],
         });
         this.loginPage = (await this.browser.pages())[0];
         setInterval(() => {
@@ -64,8 +67,10 @@ class SisoService {
         let isLogin: boolean = false;
 
         try {
-            id = CryptoJS.AES.decrypt(id, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8);
-            pw = CryptoJS.AES.decrypt(pw, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8);
+            const account = {
+                id: CryptoJS.AES.decrypt(id, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8),
+                pw: CryptoJS.AES.decrypt(pw, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8),
+            };
 
             await new Promise((resolve) => setTimeout(resolve, 1000));
             const params = new URLSearchParams({ key: '701000' });
@@ -79,8 +84,8 @@ class SisoService {
 
             await this.loginPage.click('a#tab2');
 
-            await this.loginPage.type('input[name="user_id"]', id);
-            await this.loginPage.type('input[name="user_pw"]', pw);
+            await this.loginPage.type('input[name="user_id"]', account.id);
+            await this.loginPage.type('input[name="user_pw"]', account.pw);
             await this.loginPage.keyboard.press('Enter');
             await this.loginPage.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
@@ -412,6 +417,4 @@ class SisoService {
         return date.getDay() == 6;
     }
 }
-
-const sisoService = new SisoService();
-export default sisoService;
+export const sisoService = new SisoService();

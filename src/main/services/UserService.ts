@@ -1,6 +1,6 @@
 import { UserInfo } from './../../common/type/UserInfo';
 import { UserStorage } from './../../common/type/UserStorage';
-import sisoService from "./SisoService";
+import { sisoService } from "./SisoService";
 import StorageService from "./StorageService";
 
 class UserService {

@@ -1,7 +1,7 @@
 import ROUTER from '../../common/constants/Router';
 import { BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
-import sisoService from "./SisoService";
+import { sisoService } from "./SisoService";
 import userService from "./UserService";
 
 class WindowService {
