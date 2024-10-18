@@ -76,12 +76,12 @@ h1 {
 
 @layer components {
   .root {
-    @apply w-[100vw] h-[100vh] border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden;
+    @apply w-[100vw] h-[100vh] border border-[#D0D5DD] box-border rounded-[8px] overflow-hidden bg-[#E2E8F0];
   }
 
   .root .statusbar {
     -webkit-app-region: drag;
-    @apply w-full h-[var(--statusbar-h)] bg-[#F2F3F6] rounded-t-[8px];
+    @apply w-full h-[var(--statusbar-h)] rounded-t-[8px];
   }
 
   .root .statusbar * {
@@ -95,7 +95,7 @@ h1 {
   }
 
   .root .page {
-    @apply w-full h-[calc(100%-var(--statusbar-h))] bg-[#E2E8F0];
+    @apply w-full h-[calc(100%-var(--statusbar-h))];
   }
 
   .card {

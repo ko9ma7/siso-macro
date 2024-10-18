@@ -3,13 +3,11 @@ setGlobal();
 
 import { app } from 'electron';
 import windowService from './services/WindowService';
-import { sisoService } from './services/SisoService';
 
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) app.quit();
 
 app.whenReady().then(async () => {
-    await sisoService.login();
     windowService.createWindow();
     windowService.loadWindow();
 })

@@ -1,7 +1,7 @@
 {
   "name": "siso-auto-book",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./app/main/main.js",
   "scripts": {
     "tsc": "tsc -p tsconfig.electron.json",
@@ -21,8 +21,7 @@
     "electron-log": "^5.0.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
-    "puppeteer": "^21.5.2",
-    "puppeteer-core": "^21.5.2",
+    "puppeteer": "^23.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",

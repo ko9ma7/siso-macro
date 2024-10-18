@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-condition */
 import { SisoStorage } from '../../common/type/SisoStorage';
-import puppeteer, { Browser, ElementHandle, Page } from "puppeteer-core";
+import puppeteer, { Browser, ElementHandle, Page } from "puppeteer";
 import StorageService from "./StorageService";
 import { Reservation } from "../../common/type/Reservation";
 import { Book } from "../../common/type/Book";
@@ -33,21 +33,10 @@ class SisoService {
     }
 
     async setBrowser() {
-        this.browser = await puppeteer.launch({
-            executablePath:
-                'C:/Program Files/Google/Chrome/Application/chrome.exe',
-            // headless: !global.isDev,
-            headless: true,
-            defaultViewport: { width: 1920, height: 1080 }, // 브라우저 창 크기 설정 (기본값: 800x600)
-            args: [
-                '--start-maximized', // 최대화된 창으로 시작
-                '--headless=old', // FIXME: workaround for issue [#13012]: https://github.com/puppeteer/puppeteer/issues/13012
-            ],
-        });
-        this.loginPage = (await this.browser.pages())[0];
-        setInterval(() => {
-            this.loginPage.reload();
-        }, 300 * 1000);
+        this.browser = await puppeteer.launch({ headless: true });
+        this.loginPage = await this.browser.newPage();
+        await this.login();
+        setInterval(() => this.loginPage.reload(), 300 * 1000);
         this.listPage = await this.browser.newPage();
     }
 
@@ -90,6 +79,7 @@ class SisoService {
             await this.loginPage.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
             isLogin = await this.checkLogin();
+            log.info(`로그인 ${isLogin ? "성공" : "실패"}`);
         } catch (e) {
             log.error(e);
         }
@@ -99,16 +89,14 @@ class SisoService {
 
     // 로그인 체크
     async checkLogin(): Promise<boolean> {
-        const elems = await this.loginPage.$x("//ul[@class='utility']/li/a[contains(text(), '로그아웃')]");
-
-        return elems && elems.length > 0;
+        const elem = await this.loginPage.$$("xpath/.//ul[@class='utility']/li/a[contains(text(), '로그아웃')]");
+        return !!elem;
     }
 
     // 로그아웃
     async logout(): Promise<boolean> {
         try {
-            const elem = await this.loginPage.waitForXPath("//ul[@class='utility']/li/a[contains(text(), '로그아웃')]", { timeout: this.waitTime });
-
+            const elem = await this.loginPage.waitForSelector("xpath/.//ul[@class='utility']/li/a[contains(text(), '로그아웃')]", { timeout: this.waitTime });
             await (elem as ElementHandle<Element>).click();
         } catch (e) {
             console.log(e);
@@ -238,6 +226,7 @@ class SisoService {
                     if (book.status !== BookStatus.run) break;
 
                     book.msg += `<br><br> [ ${++tryCnt} ]회 실행`;
+                    
                     this.sendUpdateBooks();
 
                     if (!this.checkRunnable(book)) {

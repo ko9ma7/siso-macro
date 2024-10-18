@@ -9,8 +9,7 @@ const SpaceItem: React.FC<Props> = ({ space }) => {
             ${selected?.no === space.no ? "border-blue-500" : "border-[#E4E7EC]"}`}
             onClick={() => setSpace(space)}
         >
-            <img src={space.thumb} className="w-full h-[180px] hover:scale-125 transition-all" />
-            <div className="absolute bottom-0 w-full bg-black bg-opacity-70 text-center text-white py-2">{space.name}</div>
+            <div className="bottom-0 w-full bg-black bg-opacity-70 text-center text-white py-2">{space.name}</div>
         </li>
     );
 };

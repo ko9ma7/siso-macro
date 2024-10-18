@@ -1,4 +1,4 @@
-import { Page } from "puppeteer-core";
+import { Page } from "puppeteer";
 import dayjs from "dayjs";
 import BookStatus from "../constants/BookStatus";
 

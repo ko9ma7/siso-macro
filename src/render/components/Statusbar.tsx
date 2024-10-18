@@ -12,10 +12,17 @@ const Statusbar: React.FC = () => {
 
     return (
         <div className="statusbar flex justify-between items-center">
-            <span className="text-[12px] font-medium ml-[4px]">Siheung Siso</span>
-            <div className="h-full flex justify-end">
-                <img src={miniIco} className="btn hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={minimizeWindow} />
-                <img src={closeIco} className="btn rounded-tr-[8px] hover:text-[#FFFFFF] hover:bg-[#D0D5DD]" onClick={closeWindow} />
+            <div className="w-full h-full flex justify-end">
+                <img
+                    className="btn rounded-full hover:text-[#FFFFFF] hover:bg-[#ffffff] mr-1"
+                    src={miniIco}
+                    onClick={minimizeWindow}
+                />
+                <img
+                    className="btn rounded-full hover:text-[#FFFFFF] hover:bg-[#ffffff] mr-1"
+                    src={closeIco}
+                    onClick={closeWindow}
+                />
             </div>
         </div>
     );

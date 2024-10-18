@@ -9,7 +9,6 @@ class WindowService {
     private readonly host = global.isDev ? "http://localhost:5173" : "./app/render/index.html";
 
     constructor() {
-        sisoService.setBrowser();
         this.ipcListener();
     }
 
@@ -49,6 +48,8 @@ class WindowService {
     }
 
     async loadWindow(route: string = ROUTER.HOME) {
+        await sisoService.setBrowser();
+
         if (global.isDev) {
             this.window.loadURL(`${this.host}/#${route}`);
         } else {
