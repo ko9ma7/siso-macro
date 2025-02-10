@@ -1,0 +1,21 @@
+productName: "siso"
+appId: "siso.macro"
+
+win:
+  target:
+    - target: "nsis"
+      arch:
+        - "x64"
+        - "ia32"
+
+nsis:
+  oneClick: true
+  perMachine: false
+
+files:
+  - "app/**/*"
+  - "node_modules/**/*"
+  - "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}"
+  - "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}"
+  - "!node_modules/*.d.ts"
+  - "!node_modules/.bin"

@@ -1,0 +1,40 @@
+{
+  "name": "@sisomacro/main",
+  "private": true,
+  "version": "1.0.0",
+  "main": "./app/main.js",
+  "scripts": {
+    "dev": "tsc && electron-forge start --enable-logging",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "dependencies": {
+    "@repo/common": "workspace:*",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.3.1",
+    "electron-log": "^5.0.1",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "puppeteer": "^24.1.1",
+    "serve": "^14.2.1",
+    "sort-by": "^1.2.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/shared-types": "^7.6.0",
+    "@types/crypto-js": "^4.2.2",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "autoprefixer": "^10.4.16",
+    "cross-env": "^7.0.3",
+    "electron": "^27.1.2",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.53.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2"
+  }
+}
