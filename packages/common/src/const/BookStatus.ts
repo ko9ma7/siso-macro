@@ -1,1 +1,1 @@
-export const enum BookStatus { stop, wait, run }
+export enum BookStatus { stop, wait, run }
