@@ -4,7 +4,8 @@ import useSpaceStore from "../store/useSpaceStore";
 import BookCard from "../components/home/BookCard";
 import useBookStore from "../store/useBookStore";
 import addImg from "@/assets/images/add.png";
-import { SpaceList, Book } from "@repo/common";
+import { SpaceList } from "../common/SpaceList";
+import { Book } from "../common/Book";
 
 const HomePage = () => {
     const { space } = useSpaceStore();

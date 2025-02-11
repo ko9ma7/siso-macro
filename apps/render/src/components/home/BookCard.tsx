@@ -3,8 +3,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { Book, DropdownValue, BookStatus } from '@repo/common';
 import Dropdown from '../Dropdown/Dropdown';
+import { BookStatus } from '../../common/BookStatus';
+import { DropdownValue } from '../../common/DropdownValue';
+import { Book } from '../../common/Book';
 
 const BookCard = (props: Props) => {
     const times: DropdownValue[] = [

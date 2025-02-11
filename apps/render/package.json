@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@repo/common": "workspace:*",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.0",
@@ -26,7 +25,8 @@
     "serve": "^14.2.1",
     "sort-by": "^1.2.0",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "puppeteer": "^24.1.1"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",

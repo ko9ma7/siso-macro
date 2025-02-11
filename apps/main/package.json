@@ -9,7 +9,6 @@
     "make": "electron-forge make"
   },
   "dependencies": {
-    "@repo/common": "workspace:*",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",

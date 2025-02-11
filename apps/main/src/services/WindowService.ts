@@ -1,8 +1,8 @@
-import { Router } from '@repo/common';
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
 import { sisoService } from "./SisoService";
 import userService from "./UserService";
+import { Router } from "../common/Router";
 
 class WindowService {
     private window: BrowserWindow;

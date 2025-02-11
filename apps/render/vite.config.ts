@@ -5,11 +5,11 @@ import path from "path";
 // https://vitejs.dev/config/
 export default (() => {
   return defineConfig({
+    // base: "./",
     plugins: [react()],
     define: {
       'process.env': process.env,
     },
-    base: "./",
     resolve: {
       alias: [
         { find: "@", replacement: path.resolve(__dirname, "src") },

@@ -1,4 +1,4 @@
-import { Space } from "@repo/common";
+import { Space } from "../../common/Space";
 import useSpaceStore from "../../store/useSpaceStore";
 
 const SpaceItem: React.FC<Props> = ({ space }) => {

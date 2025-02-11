@@ -6,7 +6,11 @@ import userService from './UserService';
 import log from "electron-log";
 import dayjs from 'dayjs';
 import CryptoJS from "crypto-js";
-import { BookStatus, EncryptKey, Book, Reservation, SisoStorage } from "@repo/common";
+import { Book } from "../common/Book";
+import { SisoStorage } from "../common/SisoStorage";
+import { EncryptKey } from "../common/Encrypt";
+import { Reservation } from "../common/Reservation";
+import { BookStatus } from "../common/BookStatus";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
