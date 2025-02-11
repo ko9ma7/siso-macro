@@ -4,8 +4,7 @@ import useSpaceStore from "../store/useSpaceStore";
 import BookCard from "../components/home/BookCard";
 import useBookStore from "../store/useBookStore";
 import addImg from "@/assets/images/add.png";
-import { Book } from "@repo/common/type";
-import { SPACE } from "@repo/common/const";
+import { SpaceList, Book } from "@repo/common";
 
 const HomePage = () => {
     const { space } = useSpaceStore();
@@ -42,7 +41,7 @@ const HomePage = () => {
         <div className="h-full flex">
 
             <ul className="w-[30%] h-full transition-all overflow-y-scroll p-2 pb-0">
-                {[...SPACE.values()].map((space) => <SpaceItem key={space.no} space={space} />)}
+                {[...SpaceList.values()].map((space) => <SpaceItem key={space.no} space={space} />)}
             </ul>
 
             <div className="w-full h-full p-2 pl-0">

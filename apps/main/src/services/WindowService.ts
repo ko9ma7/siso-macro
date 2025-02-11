@@ -1,4 +1,4 @@
-import { ROUTER } from '@repo/common/const';
+import { Router } from '@repo/common';
 import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { join } from "path";
 import { sisoService } from "./SisoService";
@@ -6,6 +6,7 @@ import userService from "./UserService";
 
 class WindowService {
     private window: BrowserWindow;
+    private readonly preload: string = join(__dirname, '../preload', 'index.js');
     private readonly host = !app.isPackaged ? "http://localhost:5173" : "./app/render/index.html";
 
     constructor() {
@@ -30,9 +31,14 @@ class WindowService {
             maximizable: false, // 최대화 비활성화
             show: false,
             webPreferences: {
-                preload: join(__dirname, '../preload.js'),
+                preload: this.preload,
+                sandbox: false,
+                contextIsolation: true,
+                nodeIntegration: false,
+                webSecurity: false,
             },
         });
+
         if (oldWindow) oldWindow.close();
         this.window.webContents.session.clearCache();
 
@@ -47,7 +53,7 @@ class WindowService {
         if (!app.isPackaged) this.window.webContents.openDevTools({ mode: "detach" });
     }
 
-    async loadWindow(route: string = ROUTER.HOME) {
+    async loadWindow(route: string = Router.HOME) {
         await sisoService.setBrowser();
 
         if (!app.isPackaged) {

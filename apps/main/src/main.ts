@@ -5,6 +5,8 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit();
 } else {
+    app.disableHardwareAcceleration();
+
     app.on('second-instance', () => {
         if (windowService.getWindow().isMinimized() || !windowService.getWindow().isVisible()) {
             windowService.getWindow().show();
@@ -15,11 +17,11 @@ if (!gotTheLock) {
     app.whenReady().then(async () => {
         windowService.createWindow();
         windowService.loadWindow();
-    })
+    });
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
             app.quit();
         }
-    })
+    });
 }

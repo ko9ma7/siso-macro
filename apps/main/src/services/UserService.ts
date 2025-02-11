@@ -1,4 +1,4 @@
-import { UserStorage, UserInfo } from "@repo/common/type"
+import { UserInfo, UserStorage } from '@repo/common';
 import { sisoService } from "./SisoService";
 import StorageService from "./StorageService";
 

@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "exports": {
-    "./const": "./dist/const/index.js",
-    "./type": "./dist/type/index.js"
+    ".": "./dist/index.js",
+    "./type": "./dist/index.d.ts"
   },
   "scripts": {
     "build": "tsc",

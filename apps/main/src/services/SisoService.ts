@@ -6,8 +6,7 @@ import userService from './UserService';
 import log from "electron-log";
 import dayjs from 'dayjs';
 import CryptoJS from "crypto-js";
-import { Book, Reservation, SisoStorage } from "@repo/common/type";
-import { BookStatus, ENCRYPT_KEY } from "@repo/common/const";
+import { BookStatus, EncryptKey, Book, Reservation, SisoStorage } from "@repo/common";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -54,8 +53,8 @@ class SisoService {
 
         try {
             const account = {
-                id: CryptoJS.AES.decrypt(id, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8),
-                pw: CryptoJS.AES.decrypt(pw, ENCRYPT_KEY).toString(CryptoJS.enc.Utf8),
+                id: CryptoJS.AES.decrypt(id, EncryptKey).toString(CryptoJS.enc.Utf8),
+                pw: CryptoJS.AES.decrypt(pw, EncryptKey).toString(CryptoJS.enc.Utf8),
             };
 
             await new Promise((resolve) => setTimeout(resolve, 1000));

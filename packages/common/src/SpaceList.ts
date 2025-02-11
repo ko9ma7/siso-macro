@@ -1,6 +1,6 @@
-import { Space } from "../type/Space";
+import { Space } from "./Space";
 
-export const SPACE: Map<string, Space> = new Map<string, Space>(
+export const SpaceList: Map<string, Space> = new Map<string, Space>(
     [
         [
             "JOONGANG",
@@ -43,4 +43,4 @@ export const SPACE: Map<string, Space> = new Map<string, Space>(
             } as Space,
         ],
     ]
-);1
+); 1

@@ -1,4 +1,4 @@
-import { BookStatus } from "../const/BookStatus";
+import { BookStatus } from "./BookStatus";
 import { Page } from "puppeteer";
 import dayjs from "dayjs";
 

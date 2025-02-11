@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "./app/main.js",
   "scripts": {
-    "dev": "tsc && electron-forge start --enable-logging",
+    "dev": "vite --mode dev",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -21,11 +21,6 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.6.0",
-    "@electron-forge/maker-deb": "^7.6.0",
-    "@electron-forge/maker-squirrel": "^7.6.0",
-    "@electron-forge/maker-zip": "^7.6.0",
-    "@electron-forge/shared-types": "^7.6.0",
     "@types/crypto-js": "^4.2.2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
@@ -35,6 +30,8 @@
     "electron-builder": "^24.9.1",
     "eslint": "^8.53.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-electron": "^0.29.0"
   }
 }
