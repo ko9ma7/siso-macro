@@ -1,5 +1,9 @@
-import { Space } from "../../common/Space";
+import { Space } from "@repo/type";
 import useSpaceStore from "../../store/useSpaceStore";
+
+interface Props {
+    space: Space;
+}
 
 const SpaceItem: React.FC<Props> = ({ space }) => {
     const { space: selected, setSpace } = useSpaceStore();
@@ -14,7 +18,3 @@ const SpaceItem: React.FC<Props> = ({ space }) => {
     );
 };
 export default SpaceItem;
-
-interface Props {
-    space: Space;
-}

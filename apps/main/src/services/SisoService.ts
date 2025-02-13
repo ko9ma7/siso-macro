@@ -6,11 +6,8 @@ import userService from './UserService';
 import log from "electron-log";
 import dayjs from 'dayjs';
 import CryptoJS from "crypto-js";
-import { Book } from "../common/Book";
-import { SisoStorage } from "../common/SisoStorage";
+import { Book, BookStatus, SisoStorage, Reservation } from "@repo/type";
 import { EncryptKey } from "../common/Encrypt";
-import { Reservation } from "../common/Reservation";
-import { BookStatus } from "../common/BookStatus";
 
 class SisoService {
     private host = 'https://share.siheung.go.kr';
@@ -154,7 +151,14 @@ class SisoService {
             });
 
             for (const arr of rows) {
-                result.push(new Reservation(arr));
+                const obj = {
+                    id: parseInt(arr[0] ?? ''),
+                    place: arr[1] ?? '',
+                    dateTime: (arr[3] ?? '').replace(/\t/g, ''),
+                    status: arr[6] ?? '',
+                } as Reservation;
+
+                result.push(obj);
             }
 
             storage[userStorage.id] = { list: result };

@@ -1,4 +1,4 @@
-import { Space } from "@repo/common/type";
+import { Space } from "@repo/type";
 import { create } from "zustand";
 
 interface SpaceState {

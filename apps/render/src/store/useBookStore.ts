@@ -1,4 +1,4 @@
-import { Book } from '@repo/common/type';
+import { Book } from '@repo/type';
 import { create } from "zustand";
 
 interface BookState {

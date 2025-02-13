@@ -5,7 +5,7 @@ import BookCard from "../components/home/BookCard";
 import useBookStore from "../store/useBookStore";
 import addImg from "@/assets/images/add.png";
 import { SpaceList } from "../common/SpaceList";
-import { Book } from "../common/Book";
+import { Book } from "@repo/type";
 
 const HomePage = () => {
     const { space } = useSpaceStore();
@@ -22,7 +22,7 @@ const HomePage = () => {
             return;
         }
 
-        const book = new Book();
+        const book = {} as Book;
         book.id = crypto.randomUUID();
         book.spaceNo = space.no;
 

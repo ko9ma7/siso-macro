@@ -5,8 +5,11 @@ import { } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import Dropdown from '../Dropdown/Dropdown';
 import { BookStatus } from '../../common/BookStatus';
-import { DropdownValue } from '../../common/DropdownValue';
-import { Book } from '../../common/Book';
+import { DropdownValue, Book } from '@repo/type';
+
+interface Props {
+    book?: Book;
+}
 
 const BookCard = (props: Props) => {
     const times: DropdownValue[] = [
@@ -98,7 +101,3 @@ const BookCard = (props: Props) => {
     );
 };
 export default BookCard;
-
-interface Props {
-    book?: Book;
-}

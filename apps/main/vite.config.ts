@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
                         build: {
                             sourcemap,
                             minify: false,
-                            outDir: 'app',
+                            outDir: 'app/main',
                             assetsDir: 'assets',
                             rollupOptions: {
                                 // Some third-party Node.js libraries may not be built correctly by Vite, especially `C/C++` addons,

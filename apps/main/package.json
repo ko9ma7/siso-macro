@@ -2,11 +2,10 @@
   "name": "@sisomacro/main",
   "private": true,
   "version": "1.0.0",
-  "main": "./app/main.js",
+  "main": "./app/main/main.js",
   "scripts": {
     "dev": "vite --mode dev",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "build": "vite build && electron-builder --config electron-builder.yml -w"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
@@ -20,6 +19,7 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
+    "@repo/type": "workspace:*",
     "@types/crypto-js": "^4.2.2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",

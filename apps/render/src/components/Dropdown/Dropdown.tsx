@@ -1,4 +1,4 @@
-import { DropdownValue } from "../../common/DropdownValue";
+import { DropdownValue } from "@repo/type";
 
 const Dropdown = (props: Props) => {
     const onChange = (e) => {

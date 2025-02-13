@@ -1,4 +1,4 @@
-import { Space } from "./Space";
+import { Space } from "@repo/type";
 
 export const SpaceList: Map<string, Space> = new Map<string, Space>(
     [
