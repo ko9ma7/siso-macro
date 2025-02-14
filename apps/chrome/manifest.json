@@ -1,0 +1,16 @@
+{
+    "name": "시흥을 잇다 '시소' 매크로",
+    "description": "시흥시 대여공간 서비스를 자동으로 예약합니다.",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": "icon.png"
+    },
+    "icons": {
+        "16": "icon.png",
+        "32": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    }
+}
