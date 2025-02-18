@@ -7,8 +7,7 @@
             "require": "./index.d.ts"
         }
     },
-    "dependencies": {
-        "puppeteer": "^24.1.1"
-    },
-    "devDependencies": {}
+    "devDependencies": {
+        "puppeteer": "^24.2.1"
+    }
 }

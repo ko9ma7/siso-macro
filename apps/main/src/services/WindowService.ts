@@ -7,7 +7,7 @@ import { Router } from "../common/Router";
 class WindowService {
     private window: BrowserWindow;
     private readonly preload: string = join(__dirname, '../preload', 'index.js');
-    private readonly host = !app.isPackaged ? "http://localhost:5173" : "./app/render/index.html";
+    private readonly host = !app.isPackaged ? "http://localhost:5173" : join(__dirname, "../render/index.html");
 
     constructor() {
         this.ipcListener();
@@ -59,7 +59,7 @@ class WindowService {
         if (!app.isPackaged) {
             this.window.loadURL(`${this.host}/#${route}`);
         } else {
-            this.window.loadFile(`${this.host}`, { hash: route });
+            this.window.loadFile(this.host, { hash: `#${route}` });
         }
 
         this.setWindowSize(1020, 680);

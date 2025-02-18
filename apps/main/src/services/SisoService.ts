@@ -30,7 +30,10 @@ class SisoService {
     }
 
     async setBrowser() {
-        this.browser = await puppeteer.launch({ headless: true });
+        this.browser = await puppeteer.launch({
+            executablePath: puppeteer.executablePath(),
+            headless: true,
+        });
         this.loginPage = await this.browser.newPage();
         await this.login();
         setInterval(() => this.loginPage.reload(), 300 * 1000);

@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react'
 import path from "path";
 
 // https://vitejs.dev/config/
-export default (() => {
-  return defineConfig({
-    // base: "./",
+export default defineConfig(({ command, mode }) => {
+  return {
+    base: command === 'build' ? "./" : "/",
     plugins: [react()],
     define: {
       'process.env': process.env,
@@ -18,5 +18,5 @@ export default (() => {
     build: {
       emptyOutDir: true,
     }
-  });
+  };
 });
