@@ -5,7 +5,3 @@
 ## Electron
 
 puppeteer 기반 매크로 프로그램
-
-## Chrome Extensions
-
-Chrome 확장프로그램
